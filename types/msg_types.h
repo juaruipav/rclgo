@@ -1,5 +1,6 @@
- #include <rcl/rcl.h>
- #include <rosidl_generator_c/message_type_support_struct.h>
+#include <rcl/rcl.h>
+#include <rosidl_generator_c/message_type_support_struct.h>
+#include <rosidl_generator_c/string_functions.h>
 #include <rcl/error_handling.h>
 
 // MACRO to generate the proper function 
@@ -7,25 +8,19 @@
   return ROSIDL_GET_MSG_TYPE_SUPPORT(x,y,z); \
 }
 
-#define ALLOCATE(s) \
-  rcl_get_default_allocator().allocate(s, rcl_get_default_allocator().state)
-#define DEALLOCATE(ptr) \
-  rcl_get_default_allocator().deallocate(ptr, rcl_get_default_allocator().state)
-#define REALLOCATE(ptr, s) \
-  rcl_get_default_allocator().reallocate(ptr, s, rcl_get_default_allocator().state)
-#define ZERO_ALLOCATE(s) \
-  rcl_get_default_allocator().zero_allocate(s, 1, rcl_get_default_allocator().state)
+#define CREATE_MSG_INIT(x,y,z) const x##__##y##__##z* init_## x ##_## y ##_## z (){ \
+  return  x##__##y##__##z##__create(); \
+}
 
-#define PRINT_RCL_ERROR(rclc, rcl) \
-  do { \
-    fprintf(stderr, "[" #rclc "] error in " #rcl ": %s\n", rcl_get_error_string_safe()); \
-    rcl_reset_error(); \
-  } while (0)
+#define CREATE_MSG_DESTROY(x,y,z) void destroy_## x ##_## y ##_## z (x##__##y##__##z* msg){ \
+  return  x##__##y##__##z##__destroy(msg); \
+  }
 
 
 ///////////////////////////////////////
 ///// STD MSGS
 //////////////////////////////////////
+
 
 // #include <std_msgs/msg/.h>
 // GET_MSG_TYPE_SUPPORT(std_msgs,msg,)
@@ -74,6 +69,8 @@ GET_MSG_TYPE_SUPPORT(std_msgs,msg,MultiArrayLayout)
 
 #include <std_msgs/msg/string.h>
 GET_MSG_TYPE_SUPPORT(std_msgs,msg,String)
+CREATE_MSG_INIT(std_msgs,msg,String)
+CREATE_MSG_DESTROY(std_msgs,msg,String)
 
 #include <std_msgs/msg/u_int16.h>
 GET_MSG_TYPE_SUPPORT(std_msgs,msg,UInt16)

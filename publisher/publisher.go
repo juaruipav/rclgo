@@ -1,15 +1,16 @@
 package publisher
 
 // #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils
+// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils -lstd_msgs__rosidl_typesupport_c
 // #include <rosidl_generator_c/message_type_support_struct.h>
 // #include "rcl/rcl.h"
-// #include "std_msgs/msg/string.h"
+// #include <std_msgs/msg/string.h>
+// #include  <std_msgs/msg/string__functions.h>
 //#define ZERO_ALLOCATE(s) \
 //  rcl_get_default_allocator().zero_allocate(s, 1, rcl_get_default_allocator().state)
-// int publish (const rcl_publisher_t * publisher, rosidl_message_type_support_t* msg){
-//		void * msg2 = ZERO_ALLOCATE(sizeof(std_msgs__msg__String));
-//		int retValue = rcl_publish(publisher,msg2);
+//
+// int publish (const rcl_publisher_t * publisher, void* msg){
+//		int retValue = rcl_publish(publisher,msg);
 //		return retValue;
 //}
 import "C"
@@ -37,14 +38,6 @@ func GetPublisherDefaultOptions() PublisherOptions {
 	return PublisherOptions{&defOpts}
 }
 
-// rcl_ret_t
-// rcl_publisher_init(
-//   rcl_publisher_t * publisher,
-//   const rcl_node_t * node,
-//   const rosidl_message_type_support_t * type_support,
-//   const char * topic_name,
-//   const rcl_publisher_options_t * options);
-
 func PublisherInit(publisher Publisher, publisherOptions PublisherOptions, node node.Node, topicName string, msg types.MessageTypeSupport) types.RCLRetT {
 
 	tName := C.CString(topicName)
@@ -58,8 +51,8 @@ func PublisherInit(publisher Publisher, publisherOptions PublisherOptions, node 
 
 }
 
-func Publish(publisher Publisher, msg types.MessageTypeSupport) types.RCLRetT {
-	retvalue := C.publish(publisher.RCLPublisher, nil)
+func Publish(publisher Publisher, msg types.Message) types.RCLRetT {
+	retvalue := C.publish(publisher.RCLPublisher, msg.GetMessage())
 	return types.RCLRetT(retvalue)
 }
 
