@@ -22,17 +22,20 @@ func TestPublishershit(t *testing.T) {
 
 	myPub := GetZeroInitializedPublisher()
 	myPubOpts := GetPublisherDefaultOptions()
-
-	//Creating the type
 	msgType := types.GetMessageTypeFromStdMsgsString()
 
 	fmt.Printf("Creating the publisher! \n")
 	retValue2 := PublisherInit(myPub, myPubOpts, myNode, "/chatter", msgType)
-	fmt.Printf("Ret value from sub init is %d\n", retValue2)
+	fmt.Printf("Ret value from pub init is %d\n", retValue2)
+
+	//Creating the type
+	var myMsg types.StdMsgsStringMsg
+	myMsg.Text = "Hola Mundo ROS2 desde GOLANG"
+	myMsg.InitMessage()
 
 	retRCL := Publish(myPub, msgType)
-	fmt.Printf("(go) Ret value is %d\n", retRCL)
-	time.Sleep(500 * time.Millisecond) // or runtime.Gosched() or similar per @misterbee
+	fmt.Printf("(Publish) Ret value is %d\n", retRCL)
+	time.Sleep(1000 * time.Millisecond) // or runtime.Gosched() or similar per @misterbee
 
 	fmt.Printf("Shutting down!! \n")
 

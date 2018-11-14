@@ -1,16 +1,34 @@
 package publisher
 
 // #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils -lstd_msgs__rosidl_typesupport_c
+// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
 // #include <rosidl_generator_c/message_type_support_struct.h>
 // #include "rcl/rcl.h"
 // #include <std_msgs/msg/string.h>
 // #include  <std_msgs/msg/string__functions.h>
-//#define ZERO_ALLOCATE(s) \
-//  rcl_get_default_allocator().zero_allocate(s, 1, rcl_get_default_allocator().state)
-//
+//#include <rosidl_generator_c/string_functions.h>
 // int publish (const rcl_publisher_t * publisher, void* msg){
-//		int retValue = rcl_publish(publisher,msg);
+//		if(msg == NULL)
+//			printf("MSG IS NULL\n");
+//		std_msgs__msg__String msg2;
+//		int retValue = rcl_publish(publisher,&msg2);
+//		return retValue;
+//}
+// int publish2 (const rcl_publisher_t * publisher, rosidl_message_type_support_t* msg){
+//		if(msg == NULL)
+//			printf("MSG IS NULL\n");
+// 		std_msgs__msg__String* mymsg = std_msgs__msg__String__create();
+// 		rosidl_generator_c__String__assign(&(*mymsg).data,"message");
+//		//msg->typesupport_identifier = "holahola";
+//		msg->data = mymsg;
+//		printf("typesupport identifier %s\n",msg->typesupport_identifier);
+//		int retValue = rcl_publish(publisher, msg->data);
+//		return retValue;
+//}
+// int publish3 (const rcl_publisher_t * publisher, std_msgs__msg__String* msg){
+//		if(msg == NULL)
+//			printf("MSG IS NULL\n");
+//		int retValue = rcl_publish(publisher, msg);
 //		return retValue;
 //}
 import "C"
@@ -51,9 +69,16 @@ func PublisherInit(publisher Publisher, publisherOptions PublisherOptions, node 
 
 }
 
-func Publish(publisher Publisher, msg types.Message) types.RCLRetT {
-	retvalue := C.publish(publisher.RCLPublisher, msg.GetMessage())
-	return types.RCLRetT(retvalue)
+// func Publish(publisher Publisher, msg types.Message) types.RCLRetT {
+// 	// retValue := C.publish(publisher.RCLPublisher, msg.GetMessage())
+// 	retValue := C.rcl_publish(publisher.RCLPublisher, msg.GetMessage())
+// 	return types.RCLRetT(retValue)
+// }
+
+func Publish(publisher Publisher, msg types.MessageTypeSupport) types.RCLRetT {
+	retValue := C.publish2(publisher.RCLPublisher, (*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)))
+	// retValue := C.rcl_publish(publisher.RCLPublisher, msg.ROSIdlMessageTypeSupport)
+	return types.RCLRetT(retValue)
 }
 
 // func SubscriptionFini(subscription Subscription, node node.Node) types.RCLRetT {
