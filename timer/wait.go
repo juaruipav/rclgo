@@ -1,10 +1,11 @@
-package rcl
+package timer
 
 // #cgo CFLAGS: -I/opt/ros/bouncy/include
 // #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils
 // #include "rcl/rcl.h"
 import "C"
 import (
+	"rclgo/rcl"
 	"rclgo/subscription"
 	"rclgo/types"
 	"unsafe"
@@ -36,7 +37,7 @@ func WaitSetFini(waitSet WaitSet) types.RCLRetT {
 	return types.RCLRetT(C.rcl_wait_set_fini(waitSet.RCLWaitSet))
 }
 
-func WaitSetGetAllocator(waitset WaitSet, allocator Allocator) types.RCLRetT {
+func WaitSetGetAllocator(waitset WaitSet, allocator rcl.Allocator) types.RCLRetT {
 	allocatorPtr := (*C.struct_rcutils_allocator_t)(unsafe.Pointer(allocator.Allocator))
 	return types.RCLRetT(C.rcl_wait_set_get_allocator(waitset.RCLWaitSet, allocatorPtr))
 }

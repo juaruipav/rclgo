@@ -8,9 +8,12 @@ package subscription
 // #include "std_msgs/msg/string.h"
 //#define ZERO_ALLOCATE(s) \
 //  rcl_get_default_allocator().zero_allocate(s, 1, rcl_get_default_allocator().state)
-// int my_rcl_take (const rcl_subscription_t * subscription, rosidl_message_type_support_t* msg){
-//		void * msg2 = ZERO_ALLOCATE(sizeof(std_msgs__msg__String));
-//		int retValue = rcl_take(subscription, msg2, NULL);
+// int my_rcl_take (const rcl_subscription_t * subscription, rosidl_message_type_support_t* msg,void * data){
+//		if(msg == NULL || subscription == NULL || data == NULL)
+//			return 1;
+//		// Payload assignation to the message
+//		msg->data = data;
+//		int retValue = rcl_take(subscription, data, NULL);
 //		return retValue;
 //}
 import "C"
@@ -58,7 +61,7 @@ func SubscriptionFini(subscription Subscription, node node.Node) types.RCLRetT {
 
 }
 
-func RCLTake(subscription Subscription, msg types.MessageTypeSupport) types.RCLRetT {
+func RCLTake(subscription Subscription, msg types.MessageTypeSupport, data types.MessageData) types.RCLRetT {
 
 	// myType := (*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport))
 
@@ -66,8 +69,7 @@ func RCLTake(subscription Subscription, msg types.MessageTypeSupport) types.RCLR
 	// defer C.free(cdata)
 
 	return types.RCLRetT(C.my_rcl_take(subscription.RCLSubscription,
-		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)),
-	))
+		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)), data.Data))
 
 	//return types.RCLRetT(C.rcl_take(subscription.RCLSubscription,
 	//	unsafe.Pointer(msg.ROSIdlMessageTypeSupport), nil))

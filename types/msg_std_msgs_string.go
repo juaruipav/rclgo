@@ -3,35 +3,43 @@ package types
 // #cgo CFLAGS: -I/opt/ros/bouncy/include
 // #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
 // #include "msg_types.h"
+// char * getCharFromStruct(std_msgs__msg__String* msg){
+//		if(msg!=NULL)
+//			return msg->data.data;
+//		else
+//			return "";
+//}
 import "C"
 import (
-	"fmt"
 	"unsafe"
 )
 
-type StdMsgsStringMsg struct {
+type StdMsgsString struct {
 	Data    *C.std_msgs__msg__String
 	MsgType MessageTypeSupport
 }
 
-func (msg *StdMsgsStringMsg) GetMessage() MessageTypeSupport {
+func (msg *StdMsgsString) GetMessage() MessageTypeSupport {
 	return msg.MsgType
 }
 
-func (msg *StdMsgsStringMsg) GetData() MessageData {
+func (msg *StdMsgsString) GetData() MessageData {
 	return MessageData{unsafe.Pointer(msg.Data)}
 }
 
-func (msg *StdMsgsStringMsg) InitMessage() {
+func (msg *StdMsgsString) GetDataAsString() string {
+	return C.GoString(C.getCharFromStruct(msg.Data))
+}
+
+func (msg *StdMsgsString) InitMessage() {
 	msg.Data = C.init_std_msgs_msg_String()
 	msg.MsgType = GetMessageTypeFromStdMsgsString()
 }
 
-func (msg *StdMsgsStringMsg) SetText(text string) {
+func (msg *StdMsgsString) SetText(text string) {
 	cText := C.CString(text)
 	defer C.free(unsafe.Pointer(cText))
-	retValue := C.rosidl_generator_c__String__assign(&msg.Data.data, cText)
-	fmt.Printf("Ret value from assign is %t\n", retValue)
+	C.rosidl_generator_c__String__assign(&msg.Data.data, cText)
 }
 
 func GetMessageTypeFromStdMsgsString() MessageTypeSupport {

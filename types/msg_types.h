@@ -11,9 +11,10 @@
   return ROSIDL_GET_MSG_TYPE_SUPPORT(x,y,z); \
 }
 
-#define GET_MSG_TYPE_SUPPORT_HEADER(x,y,z) const rosidl_message_type_support_t* get_message_type_from_## x ##_## y ##_## z ();\
+#define GET_MSG_TYPE_SUPPORT_HEADER(x,y,z) const rosidl_message_type_support_t* get_message_type_from_## x ##_## y ##_## z ();
 
-#define CREATE_MSG_INIT_HEADER(x,y,z) const x##__##y##__##z* init_## x ##_## y ##_## z ();\
+#define CREATE_MSG_INIT_HEADER(x,y,z) const x##__##y##__##z* init_## x ##_## y ##_## z ();
+
 
 #define CREATE_MSG_INIT(x,y,z) const x##__##y##__##z* init_## x ##_## y ##_## z (){ \
   return  x##__##y##__##z##__create(); \
@@ -65,8 +66,9 @@
 // #include <std_msgs/msg/int64.h>
 // GET_MSG_TYPE_SUPPORT(std_msgs,msg,Int64)
 
-// #include <std_msgs/msg/int8.h>
-// GET_MSG_TYPE_SUPPORT(std_msgs,msg,Int8)
+#include <std_msgs/msg/int8.h>
+GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int8)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Int8)
 
 // #include <std_msgs/msg/multi_array_dimension.h>
 // GET_MSG_TYPE_SUPPORT(std_msgs,msg,MultiArrayDimension)
