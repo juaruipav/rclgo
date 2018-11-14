@@ -1,5 +1,15 @@
 package types
 
+// #cgo CFLAGS: -I/opt/ros/bouncy/include
+// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
+//// #include "msg_types.h"
+//#include <rcl/rcl.h>
+//#include <rosidl_generator_c/message_type_support_struct.h>
+import "C"
+import (
+	"unsafe"
+)
+
 type RCLRetT int
 
 // Constants used in the framework
@@ -31,3 +41,34 @@ const (
 	RCL_RET_WAIT_SET_EMPTY           = 901
 	RCL_RET_WAIT_SET_FULL            = 902
 )
+
+type MessageTypeSupport struct {
+	ROSIdlMessageTypeSupport *C.rosidl_message_type_support_t
+}
+
+type MessageData struct {
+	Data unsafe.Pointer
+}
+
+type Message interface {
+	GetMessage() MessageTypeSupport
+	GetData() MessageData
+	InitMessage()
+	// DestroyMessage()
+}
+
+// func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {
+// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Bool()}
+// }
+
+// func GetMessageTypeFromStdMsgsByte() MessageTypeSupport {
+// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Byte()}
+// }
+
+// func GetMessageTypeFromStdMsgsChar() MessageTypeSupport {
+// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Char()}
+// }
+
+// func GetMessageTypeFromStdMsgsColorRGBA() MessageTypeSupport {
+// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_ColorRGBA()}
+// }

@@ -10,6 +10,7 @@ import (
 )
 
 func TestPublishershit(t *testing.T) {
+
 	// Initialization
 	rcl.Init()
 	myNode := node.GetZeroInitializedNode()
@@ -30,10 +31,11 @@ func TestPublishershit(t *testing.T) {
 
 	//Creating the type
 	var myMsg types.StdMsgsStringMsg
-	myMsg.Text = "Hola Mundo ROS2 desde GOLANG"
 	myMsg.InitMessage()
+	myMsg.SetText("Me voy al gym!")
 
-	retRCL := Publish(myPub, msgType)
+	retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
+
 	fmt.Printf("(Publish) Ret value is %d\n", retRCL)
 	time.Sleep(1000 * time.Millisecond) // or runtime.Gosched() or similar per @misterbee
 
