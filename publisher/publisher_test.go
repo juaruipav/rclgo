@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func TestPublishershit(t *testing.T) {
+func TestPublisherStringMsg(t *testing.T) {
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -35,35 +35,35 @@ func TestPublishershit(t *testing.T) {
 	myNodeOpts := node.GetNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	retNode := node.NodeInit(myNode, "fakeNameForNode", "", myNodeOpts)
-	fmt.Printf("Ret value for node is %d \n", retNode)
+	node.NodeInit(myNode, "GoPublisher", "", myNodeOpts)
 
 	//Create the publisher
 	myPub := GetZeroInitializedPublisher()
 	myPubOpts := GetPublisherDefaultOptions()
 
-	//Creating the msg type
+	//Create the msg type
 	var myMsg types.StdMsgsString
 	myMsg.InitMessage()
-	myMsg.SetText("Me voy al gym!")
 
-	//Initializing the publisher
 	fmt.Printf("Creating the publisher! \n")
-	retValue2 := PublisherInit(myPub, myPubOpts, myNode, "/chatter", myMsg.GetMessage())
-	fmt.Printf("Ret value from pub init is %d\n", retValue2)
+	//Initializing the publisher
+	PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
 
 	index := 0
-
 loop:
 	for {
 		//Update my msg
-		myMsg.SetText("My msg #" + strconv.Itoa(index))
+		myMsg.SetText("Greetings from GO! #" + strconv.Itoa(index))
 		//Publish the message
 		retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
-		fmt.Printf("(Publish) Ret value is %d\n", retRCL)
-		time.Sleep(1000 * time.Millisecond)
+		if retRCL == types.RCL_RET_OK {
+			fmt.Printf("(Publisher) Published: %s\n", myMsg.GetDataAsString())
+		}
+		time.Sleep(500 * time.Millisecond)
 		index++
+
+		//Loop breaker
 		select {
 		case <-sigs:
 			fmt.Println("Got shutdown, exiting")
@@ -76,7 +76,8 @@ loop:
 
 	fmt.Printf("Shutting down!! \n")
 
-	// SubscriptionFisni(mySub, myNode)
+	myMsg.DestroyMessage()
+	PublisherFini(myPub, myNode)
 	node.NodeFini(myNode)
 	rcl.Shutdown()
 

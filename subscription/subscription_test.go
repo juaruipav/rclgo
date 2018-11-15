@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func TestSubscriptionshit(t *testing.T) {
+func TestSubscription(t *testing.T) {
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -33,10 +33,8 @@ func TestSubscriptionshit(t *testing.T) {
 	myNodeOpts := node.GetNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	retNode := node.NodeInit(myNode, "fakeNameForNode", "", myNodeOpts)
-	fmt.Printf("Ret value for node is %d \n", retNode)
+	node.NodeInit(myNode, "GoSubscriber", "", myNodeOpts)
 	//Create the subscriptor
-
 	mySub := GetZeroInitializedSubscription()
 	mySubOpts := GetSubscriptionDefaultOptions()
 
@@ -44,8 +42,7 @@ func TestSubscriptionshit(t *testing.T) {
 	msgType := types.GetMessageTypeFromStdMsgsString()
 
 	fmt.Printf("Creating the subscriber! \n")
-	retValue2 := SubscriptionInit(mySub, mySubOpts, myNode, "/chatter", msgType)
-	fmt.Printf("Ret value from sub init is %d\n", retValue2)
+	SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
 
 	//Creating the msg type
 	var myMsg types.StdMsgsString
@@ -54,10 +51,13 @@ func TestSubscriptionshit(t *testing.T) {
 loop:
 	for {
 
-		retRCL := RCLTake(mySub, myMsg.GetMessage(), myMsg.GetData())
+		retRCL := TakeMessage(mySub, myMsg.GetMessage(), myMsg.GetData())
 
-		fmt.Printf("(go) Ret value is %d and %s\n", retRCL, myMsg.GetDataAsString())
-		time.Sleep(1000 * time.Millisecond)
+		if retRCL == types.RCL_RET_OK {
+			fmt.Printf("(Suscriber) Received %s\n", myMsg.GetDataAsString())
+		}
+
+		time.Sleep(100 * time.Millisecond)
 		select {
 		case <-sigs:
 			fmt.Println("Got shutdown, exiting")
@@ -68,6 +68,7 @@ loop:
 
 	fmt.Printf("Shutting down!! \n")
 
+	myMsg.DestroyMessage()
 	SubscriptionFini(mySub, myNode)
 	node.NodeFini(myNode)
 	rcl.Shutdown()

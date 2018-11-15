@@ -40,6 +40,10 @@ func GetPublisherDefaultOptions() PublisherOptions {
 	return PublisherOptions{&defOpts}
 }
 
+func GetTopicName(publisher Publisher) string {
+	return C.GoString(C.rcl_publisher_get_topic_name(publisher.RCLPublisher))
+}
+
 func PublisherInit(publisher Publisher, publisherOptions PublisherOptions, node node.Node, topicName string, msg types.MessageTypeSupport) types.RCLRetT {
 
 	tName := C.CString(topicName)
@@ -53,6 +57,10 @@ func PublisherInit(publisher Publisher, publisherOptions PublisherOptions, node 
 
 }
 
+func PublisherFini(publisher Publisher, node node.Node) types.RCLRetT {
+	return types.RCLRetT(C.rcl_publisher_fini(publisher.RCLPublisher, (*C.struct_rcl_node_t)(unsafe.Pointer(node.RCLNode))))
+}
+
 func Publish(publisher Publisher, msg types.MessageTypeSupport, data types.MessageData) types.RCLRetT {
 
 	retValue := C.publish(publisher.RCLPublisher,
@@ -60,4 +68,8 @@ func Publish(publisher Publisher, msg types.MessageTypeSupport, data types.Messa
 		data.Data)
 
 	return types.RCLRetT(retValue)
+}
+
+func IsValid(publisher Publisher) bool {
+	return bool(C.rcl_publisher_is_valid(publisher.RCLPublisher, nil))
 }

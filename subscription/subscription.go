@@ -11,8 +11,6 @@ package subscription
 // int my_rcl_take (const rcl_subscription_t * subscription, rosidl_message_type_support_t* msg,void * data){
 //		if(msg == NULL || subscription == NULL || data == NULL)
 //			return 1;
-//		// Payload assignation to the message
-//		msg->data = data;
 //		int retValue = rcl_take(subscription, data, NULL);
 //		return retValue;
 //}
@@ -61,16 +59,9 @@ func SubscriptionFini(subscription Subscription, node node.Node) types.RCLRetT {
 
 }
 
-func RCLTake(subscription Subscription, msg types.MessageTypeSupport, data types.MessageData) types.RCLRetT {
-
-	// myType := (*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport))
-
-	// cdata := C.malloc(C.size_t(unsafe.Sizeof(*myType)))
-	// defer C.free(cdata)
+func TakeMessage(subscription Subscription, msg types.MessageTypeSupport, data types.MessageData) types.RCLRetT {
 
 	return types.RCLRetT(C.my_rcl_take(subscription.RCLSubscription,
 		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)), data.Data))
 
-	//return types.RCLRetT(C.rcl_take(subscription.RCLSubscription,
-	//	unsafe.Pointer(msg.ROSIdlMessageTypeSupport), nil))
 }

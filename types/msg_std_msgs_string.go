@@ -15,7 +15,7 @@ import (
 )
 
 type StdMsgsString struct {
-	Data    *C.std_msgs__msg__String
+	data    *C.std_msgs__msg__String
 	MsgType MessageTypeSupport
 }
 
@@ -24,22 +24,26 @@ func (msg *StdMsgsString) GetMessage() MessageTypeSupport {
 }
 
 func (msg *StdMsgsString) GetData() MessageData {
-	return MessageData{unsafe.Pointer(msg.Data)}
+	return MessageData{unsafe.Pointer(msg.data)}
 }
 
 func (msg *StdMsgsString) GetDataAsString() string {
-	return C.GoString(C.getCharFromStruct(msg.Data))
+	return C.GoString(C.getCharFromStruct(msg.data))
 }
 
 func (msg *StdMsgsString) InitMessage() {
-	msg.Data = C.init_std_msgs_msg_String()
+	msg.data = C.init_std_msgs_msg_String()
 	msg.MsgType = GetMessageTypeFromStdMsgsString()
+}
+
+func (msg *StdMsgsString) DestroyMessage() {
+	C.destroy_std_msgs_msg_String(msg.data)
 }
 
 func (msg *StdMsgsString) SetText(text string) {
 	cText := C.CString(text)
 	defer C.free(unsafe.Pointer(cText))
-	C.rosidl_generator_c__String__assign(&msg.Data.data, cText)
+	C.rosidl_generator_c__String__assign(&msg.data.data, cText)
 }
 
 func GetMessageTypeFromStdMsgsString() MessageTypeSupport {

@@ -54,7 +54,7 @@ type Message interface {
 	GetMessage() MessageTypeSupport
 	GetData() MessageData
 	InitMessage()
-	// DestroyMessage()
+	DestroyMessage()
 }
 
 // func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {
