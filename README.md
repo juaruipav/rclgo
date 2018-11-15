@@ -6,7 +6,7 @@ The goal of this repository is to create a wrapper using cgo for the C library d
 
 ## Available functionality
 
-Some basic behaviours such as creating a Node, a Publisher or a Subscriber is already implemented. For messages, only the std_msgs/String has been implemented by now. In principle, it is intended to generate custom messages with C generator and bind our own types later in go. For the generation of messages, templates and go generate will be used.
+Some basic behaviors such as creating a Node, a Publisher or a Subscriber have been already implemented. For messages, only the std_msgs/String has been implemented by now. In principle, it is intended to generate custom messages with C generator and bind our own types later in go. For the generation of messages, templates and go generate will be used.
 
 ![snapshot](ros2go.gif)
 
@@ -18,11 +18,13 @@ The goal of this repository is to be as closed as possible to the official C API
 
 ## Pre-requisites
 
-cgo is used for the library wrapping. Temporarly, it is assumed that you have the RCL libraries in:
+cgo is used for the library wrapping. Temporarly, it is assumed that you have ros bouncy installed in:
 
 ```
 /opt/ros/bouncy
 ```
+
+This is a temporarly solution and it will be changed in the future. A more elegant solution would be to use an enviromental variable to point the library to the proper location.
 
 
 
