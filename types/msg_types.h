@@ -69,6 +69,7 @@ GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int64)
 #include <std_msgs/msg/int8.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int8)
 CREATE_MSG_INIT_HEADER(std_msgs,msg,Int8)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Int8)
 
 // #include <std_msgs/msg/multi_array_dimension.h>
 // GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,MultiArrayDimension)
