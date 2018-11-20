@@ -50,9 +50,13 @@ GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Empty)
 
 #include <std_msgs/msg/float32.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Float32)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Float32)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Float32)
 
 #include <std_msgs/msg/float64.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Float64)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Float64)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Float64)
 
 #include <std_msgs/msg/header.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Header)
@@ -88,14 +92,26 @@ GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,String)
 CREATE_MSG_INIT_HEADER(std_msgs,msg,String)
 CREATE_MSG_DESTROY_HEADER(std_msgs,msg,String)
 
+
+#include <std_msgs/msg/u_int8.h>
+GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,UInt8)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,UInt8)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,UInt8)
+
 #include <std_msgs/msg/u_int16.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,UInt16)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,UInt16)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,UInt16)
 
 #include <std_msgs/msg/u_int32.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,UInt32)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,UInt32)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,UInt32)
 
 #include <std_msgs/msg/u_int64.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,UInt64)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,UInt64)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,UInt64)
 
 #include <std_msgs/msg/u_int8.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,UInt8)

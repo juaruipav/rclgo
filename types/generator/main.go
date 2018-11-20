@@ -28,7 +28,15 @@ func replaceUnderscoreAndCamelCase(input string) string {
 	retValue := ""
 
 	for _, splitted := range splittedString {
-		retValue = retValue + strings.Title(splitted)
+		if strings.Contains(splitted, "ui") {
+			//Special case for UInt16 types...
+			splittedChanged := strings.ReplaceAll(splitted, "uint", "UInt")
+			retValue = retValue + splittedChanged
+
+		} else {
+			retValue = retValue + strings.Title(splitted)
+		}
+
 	}
 	return retValue
 }
@@ -119,6 +127,12 @@ func main() {
 		{"int16", "C.short"},
 		{"int32", "C.int"},
 		{"int64", "C.long"},
+		{"float32", "C.float"},
+		{"float64", "C.double"},
+		{"uint8", "C.uchar"},
+		{"uint16", "C.ushort"},
+		{"uint32", "C.uint"},
+		{"uint64", "C.ulong"},
 	}
 
 	msgs := []MyMsg{
@@ -126,6 +140,12 @@ func main() {
 		{"std_msgs", "msg", "int16", "", "", "", "", ""},
 		{"std_msgs", "msg", "int32", "", "", "", "", ""},
 		{"std_msgs", "msg", "int64", "", "", "", "", ""},
+		{"std_msgs", "msg", "uint8", "", "", "", "", ""},
+		{"std_msgs", "msg", "uint16", "", "", "", "", ""},
+		{"std_msgs", "msg", "uint32", "", "", "", "", ""},
+		{"std_msgs", "msg", "uint64", "", "", "", "", ""},
+		{"std_msgs", "msg", "float32", "", "", "", "", ""},
+		{"std_msgs", "msg", "float64", "", "", "", "", ""},
 	}
 
 	for _, msg := range msgs {
