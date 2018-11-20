@@ -130,7 +130,10 @@ loop:
 		retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
 		if retRCL == types.RCL_RET_OK {
-			fmt.Printf("(Publisher) Published: %s\n", myMsg.GetDataAsString())
+			var value string
+			fmt.Sprintf("%v", value)
+
+			fmt.Printf("(Publisher) Published: %v\n", myMsg.GetInt8())
 		}
 		time.Sleep(500 * time.Millisecond)
 		index++

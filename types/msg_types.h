@@ -59,12 +59,18 @@ GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Header)
 
 #include <std_msgs/msg/int16.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int16)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Int16)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Int16)
 
 #include <std_msgs/msg/int32.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int32)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Int32)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Int32)
 
 #include <std_msgs/msg/int64.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int64)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Int64)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Int64)
 
 #include <std_msgs/msg/int8.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int8)
