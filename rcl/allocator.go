@@ -1,10 +1,10 @@
 package rcl
 
-// #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils
 // #include "rcl/rcl.h"
 import "C"
 
+// Allocator to use on rcl functions. It used malloc(), free() and realloc() to alloc memory.
+// allocate -> Allocate memory, given a size and the state pointer.
 type Allocator struct {
 	Allocator *C.rcl_allocator_t
 }

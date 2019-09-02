@@ -11,29 +11,19 @@ Some basic behaviors such as creating a Node, a Publisher or a Subscriber have b
 ![snapshot](ros2go.gif)
 
 ## Repository structure
-Following the structure of the [RCL API](http://docs.ros2.org/latest/api/rcl/index.html), the library in go has been organized following the ROS2 concepts. Each concept correspond to a go package.
+Following the structure of the [RCL API](http://docs.ros2.org/latest/api/rcl/index.html), the library in go has been organized following the ROS2 concepts.
 
 The goal of this repository is to be as closed as possible to the official C API. When binding is complete, a good option would be to bind this rclgo library with more native/complex behavior (or even with new types/interfaces)
 
 
 ## Pre-requisites
 
-cgo is used for the library wrapping. Temporarly, it is assumed that you have ros bouncy installed in:
+cgo is used for the library wrapping. Temporarly, it is assumed that you have ros crystal installed in:
 
 ```
-/opt/ros/bouncy
+/opt/ros/crystal
 ```
 
 This is a temporarly solution and it will be changed in the future. A more elegant solution would be to use an enviromental variable to point the library to the proper location.
 
-
-
-
-
-
-
-
-
-
-
-
+The path to the libraries is hard coded in the files with the same name as the packages.
