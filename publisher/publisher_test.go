@@ -2,15 +2,17 @@ package publisher
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
-	"rclgo/node"
-	"rclgo/rcl"
-	"rclgo/types"
 	"strconv"
 	"syscall"
 	"testing"
 	"time"
+
+	"../node"
+	"../rcl"
+	"../types"
 )
 
 func TestPublisherStringMsg(t *testing.T) {
@@ -20,41 +22,55 @@ func TestPublisherStringMsg(t *testing.T) {
 
 	msg := make(chan string, 1)
 	go func() {
-		// Receive input in a loop
+		// Receive input in a loop.
 		for {
 			var s string
 			fmt.Scan(&s)
-			// Send what we read over the channel
+			// Send what we read over the channel.
 			msg <- s
 		}
 	}()
 
-	// Initialization
-	rcl.Init()
+	// Initialization.
+	var contextObject rcl.RCLContext
+	// Get initialized context object.
+	contextObject.GetInitializedContext()
+
+	// Initialize contextObject and rcl. This function has to be executed always.
+	result := rcl.RCLInit(contextObject.ContextKey)
+	if result != 0 {
+		log.Fatal(fmt.Errorf("Error initializing the context object!"))
+	}
+
+	// Obtain initialized node struct and options.
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	node.NodeInit(myNode, "GoPublisher", "", myNodeOpts)
+	// Initialize node object and associate context object to it.
+	result = node.NodeInit(myNode, "GoPublisher", "", myNodeOpts, contextObject.ContextKey)
+	if result != 0 {
+		log.Fatal(fmt.Errorf("Error initializing the node object!"))
+	}
 
-	//Create the publisher
+	// Create the publisher.
 	myPub := GetZeroInitializedPublisher()
 	myPubOpts := GetPublisherDefaultOptions()
 
-	//Create the msg type
+	// Create the msg type.
 	var myMsg types.StdMsgsString
 	myMsg.InitMessage()
 
 	fmt.Printf("Creating the publisher! \n")
-	//Initializing the publisher
+	// Initializing the publisher.
 	PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
 
 	index := 0
 loop:
 	for {
-		//Update my msg
+		//Update my msg.
 		myMsg.SetText("Greetings from GO! #" + strconv.Itoa(index))
-		//Publish the message
+		//Publish the message.
 		retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
 		if retRCL == types.RCL_RET_OK {
@@ -63,11 +79,11 @@ loop:
 		time.Sleep(500 * time.Millisecond)
 		index++
 
-		//Loop breaker
+		//Loop breaker.
 		select {
 		case <-sigs:
 			fmt.Println("Got shutdown, exiting")
-			// Break out of the outer for statement and end the program
+			// Break out of the outer for statement and end the program.
 			break loop
 		case <-msg:
 
@@ -78,11 +94,13 @@ loop:
 
 	myMsg.DestroyMessage()
 	PublisherFini(myPub, myNode)
+	// Shutdown node object.
 	node.NodeFini(myNode)
-	rcl.Shutdown()
-
+	// Shutdown context object.
+	rcl.RCLShutdown(contextObject.ContextKey)
 }
 
+/*
 func TestPublisherInt8Msg(t *testing.T) {
 
 	sigs := make(chan os.Signal, 1)
@@ -100,7 +118,9 @@ func TestPublisherInt8Msg(t *testing.T) {
 	}()
 
 	// Initialization
-	rcl.Init()
+	// Get context object.
+	contextObject := rcl.GetZeroInitializedContext()
+	rcl.Init(&contextObject)
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
 
@@ -154,7 +174,7 @@ loop:
 	myMsg.DestroyMessage()
 	PublisherFini(myPub, myNode)
 	node.NodeFini(myNode)
-	rcl.Shutdown()
+	rcl.Shutdown(&contextObject)
 
 }
 
@@ -175,7 +195,9 @@ func TestPublisherFloat64Msg(t *testing.T) {
 	}()
 
 	// Initialization
-	rcl.Init()
+	// Get context object.
+	contextObject := rcl.GetZeroInitializedContext()
+	rcl.Init(&contextObject)
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
 
@@ -229,6 +251,7 @@ loop:
 	myMsg.DestroyMessage()
 	PublisherFini(myPub, myNode)
 	node.NodeFini(myNode)
-	rcl.Shutdown()
+	rcl.Shutdown(&contextObject)
 
 }
+*/

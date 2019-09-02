@@ -1,7 +1,7 @@
 package subscription
 
-// #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils
+// #cgo CFLAGS: -I/opt/ros/crystal/include
+// #cgo LDFLAGS: -L/opt/ros/crystal/lib -lrcl -lrcutils
 // #include <rosidl_generator_c/message_type_support_struct.h>
 // #include "rcl/rcl.h"
 // #include <rcl/error_handling.h>
@@ -16,9 +16,10 @@ package subscription
 //}
 import "C"
 import (
-	"rclgo/node"
-	"rclgo/types"
 	"unsafe"
+
+	"../node"
+	"../types"
 )
 
 type Subscription struct {
@@ -44,11 +45,7 @@ func SubscriptionInit(subscription Subscription, subscriptionOptions Subscriptio
 	tName := C.CString(topicName)
 	defer C.free(unsafe.Pointer(tName))
 
-	return types.RCLRetT(C.rcl_subscription_init(subscription.RCLSubscription,
-		(*C.struct_rcl_node_t)(unsafe.Pointer(node.RCLNode)),
-		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)),
-		tName,
-		subscriptionOptions.RCLSubscriptionOptions))
+	return types.RCLRetT(C.rcl_subscription_init(subscription.RCLSubscription, getRCLNode(node), getROSIDLTypeSupport(msg), tName, subscriptionOptions.RCLSubscriptionOptions))
 
 }
 
@@ -61,7 +58,15 @@ func SubscriptionFini(subscription Subscription, node node.Node) types.RCLRetT {
 
 func TakeMessage(subscription Subscription, msg types.MessageTypeSupport, data types.MessageData) types.RCLRetT {
 
-	return types.RCLRetT(C.my_rcl_take(subscription.RCLSubscription,
-		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)), data.Data))
+	return types.RCLRetT(C.my_rcl_take(subscription.RCLSubscription, getROSIDLTypeSupport(msg), data.Data))
 
+}
+
+// Helper functions to improve code readability.
+func getROSIDLTypeSupport(typesupport types.MessageTypeSupport) *C.rosidl_message_type_support_t {
+	return (*C.rosidl_message_type_support_t)(unsafe.Pointer(typesupport.ROSIdlMessageTypeSupport))
+}
+
+func getRCLNode(node node.Node) *C.struct_rcl_node_t {
+	return (*C.struct_rcl_node_t)(unsafe.Pointer(node.RCLNode))
 }
