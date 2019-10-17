@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include <rcl/rcl.h>
-#include "map.h"
+#include "rclgomap.h"
 
 // Define global map to use to store context pointers.
 map_void_t contextMap;

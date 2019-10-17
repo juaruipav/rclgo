@@ -12,23 +12,15 @@ import (
 	"../node"
 	"../rcl"
 	"../types"
+	"../types/msg/stdmsgs"
 )
 
 func TestSubscription(t *testing.T) {
 
+	// Get commandline signals
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	msg := make(chan string, 1)
-	go func() {
-		// Receive input in a loop.
-		for {
-			var s string
-			fmt.Scan(&s)
-			// Send what we read over the channel.
-			msg <- s
-		}
-	}()
 	// Initialization.
 	var contextObject rcl.RCLContext
 	// Get initialized context object.
@@ -37,7 +29,7 @@ func TestSubscription(t *testing.T) {
 	// Initialize contextObject and rcl. This function has to be executed always.
 	result := rcl.RCLInit(contextObject.ContextKey)
 	if result != 0 {
-		log.Fatal(fmt.Errorf("Error initializing the context object!"))
+		log.Fatal(fmt.Errorf("error initializing the context object"))
 	}
 
 	// Obtain initialized node struct and options.
@@ -48,43 +40,46 @@ func TestSubscription(t *testing.T) {
 	// Initialize node object and associate context object to it.
 	result = node.NodeInit(myNode, "GoSubscriber", "", myNodeOpts, contextObject.ContextKey)
 	if result != 0 {
-		log.Fatal(fmt.Errorf("Error initializing the node object!"))
+		log.Fatal(fmt.Errorf("error initializing the node object"))
 	}
 	// Create the subscriptor.
 	mySub := GetZeroInitializedSubscription()
 	mySubOpts := GetSubscriptionDefaultOptions()
 
-	// Creating the type.
-	msgType := types.GetMessageTypeFromStdMsgsString()
+	// Create message structure
+	//var genericMsg types.MSGInterface
+
+	// distinct datatypes already tested
+	genericMsg := &stdmsgs.String{}
+	//genericMsg := &stdmsgs.Int64{}
 
 	fmt.Printf("Creating the subscriber! \n")
-	SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
-
-	// Creating the msg type.
-	var myMsg types.StdMsgsString
-	myMsg.InitMessage()
+	SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", genericMsg)
 
 loop:
 	for {
 
-		retRCL := TakeMessage(mySub, myMsg.GetMessage(), myMsg.GetData())
-
-		if retRCL == types.RCL_RET_OK {
-			fmt.Printf("(Suscriber) Received %s\n", myMsg.GetDataAsString())
-		}
-
-		time.Sleep(100 * time.Millisecond)
+		// Bad implementation, it should wait for new messages instead of spamming rcl_take()
+		// However at this time there is no achievable solution.
 		select {
 		case <-sigs:
 			fmt.Println("Got shutdown, exiting")
 			break loop
-		case <-msg:
+		default:
+			rclReturn := Take(mySub, genericMsg)
+			if rclReturn == types.RCL_RET_OK {
+				fmt.Printf("Direct message print: %v\n", genericMsg.Data)
+			}
+			time.Sleep(50 * time.Millisecond)
+
+			//case <-msg:
+
 		}
 	}
 
-	fmt.Printf("Shutting down!! \n")
+	log.Printf("Shutting down")
 
-	myMsg.DestroyMessage()
+	//myMsg.DestroyMessage()
 	SubscriptionFini(mySub, myNode)
 	// Shutdown node object.
 	node.NodeFini(myNode)
