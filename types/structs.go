@@ -1,16 +1,45 @@
 package types
 
 // #cgo CFLAGS: -I/opt/ros/crystal/include
-// #cgo LDFLAGS: -L/opt/ros/crystal/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
-//// #include "msg_types.h"
-//#include <rcl/rcl.h>
-//#include <rosidl_generator_c/message_type_support_struct.h>
+// #include <rosidl_generator_c/message_type_support_struct.h>
 import "C"
 import (
 	"unsafe"
 )
 
+// TypesupportManagerInterface TODO
+type TypesupportManagerInterface interface {
+	GetHandlerByMSGInterface(MSGInterface) (TypesupportHandlerInterface, error)
+	GetHandlerByName(string) (TypesupportHandlerInterface, error)
+	setHandler(string, TypesupportHandlerInterface) error
+}
+
+// TypesupportHandlerInterface TODO
+type TypesupportHandlerInterface interface {
+	GetROSTypesupportPointer(MSGInterface) (*C.struct_rosidl_message_type_support_t, error)
+	ParseCTypesupport(MSGInterface, CTypesupport) error
+	GetCTypesupport(MSGInterface) (unsafe.Pointer, error)
+}
+
+// MSGInterface TODO
+type MSGInterface interface {
+	ParseBytes([]byte) error
+	ToString() string
+}
+
+// CTypesupport TODO
+type CTypesupport C.struct_rosidl_message_type_support_t
+
+// RCLRetT TODO
 type RCLRetT int
+
+// Typesupport TODO
+type Typesupport struct {
+	CTypesupport C.struct_rosidl_message_type_support_t
+	Data         []byte
+	Size         uint64
+	Length       uint64
+}
 
 // Constants used in the framework
 const (
@@ -41,34 +70,3 @@ const (
 	RCL_RET_WAIT_SET_EMPTY           = 901
 	RCL_RET_WAIT_SET_FULL            = 902
 )
-
-type MessageTypeSupport struct {
-	ROSIdlMessageTypeSupport *C.rosidl_message_type_support_t
-}
-
-type MessageData struct {
-	Data unsafe.Pointer
-}
-
-type Message interface {
-	GetMessage() MessageTypeSupport
-	GetData() MessageData
-	InitMessage()
-	DestroyMessage()
-}
-
-// func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Bool()}
-// }
-
-// func GetMessageTypeFromStdMsgsByte() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Byte()}
-// }
-
-// func GetMessageTypeFromStdMsgsChar() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Char()}
-// }
-
-// func GetMessageTypeFromStdMsgsColorRGBA() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_ColorRGBA()}
-// }

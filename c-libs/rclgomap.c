@@ -8,7 +8,8 @@
 // https://github.com/rxi/map
 
 #include <stdlib.h>
-#include "map.h"
+#include <string.h>
+#include "rclgomap.h"
 
 const uint32_t Prime = 0x01000193; //   16777619
 const uint32_t Seed  = 0x811C9DC5; // 2166136261

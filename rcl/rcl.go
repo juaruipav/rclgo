@@ -1,9 +1,9 @@
 package rcl
 
 // #cgo CFLAGS: -I/opt/ros/crystal/include
-// #cgo LDFLAGS: -L/opt/ros/crystal/lib -lrcl -lrcutils -L../c-libs -lcontext
+// #cgo LDFLAGS: -L/opt/ros/crystal/lib -lrcl -lrcutils -L../c-libs -lrclgocontext
 // #include "rcl/rcl.h"
-// #include "../c-libs/context.h"
+// #include "../c-libs/rclgocontext.h"
 import "C"
 import (
 	"unsafe"

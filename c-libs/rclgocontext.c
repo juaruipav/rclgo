@@ -1,4 +1,4 @@
-#include "context.h"
+#include "rclgocontext.h"
 
 // Global variable to check if map is already initialized.
 // 0 = False, 1 = True.
