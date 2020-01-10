@@ -1,0 +1,52 @@
+name: Iniital testing github actions
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+
+jobs:
+  rclgo-testing-example:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "Checkout the repository"
+      uses: actions/checkout@v2
+      with:
+        path: ./rclgo
+        ref: feature/rclgo-3-add-a-dockerfile-for-facilitating-library-testing
+    
+    - name: Generate the docker images
+      run: docker-compose build
+      working-directory: ./rclgo
+    
+    - name: Check docker images have been generated
+      run: docker images
+    
+    - name: Execute containers in daemon mode
+      run: docker-compose up -d 
+      working-directory: ./rclgo
+      
+    - name: Sleep for 15 seconds
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '15s'
+          
+    - name: Kill containers
+      run: docker-compose kill 
+      working-directory: ./rclgo 
+      
+    - name: Save docker-compose logs
+      run: docker-compose logs -t > mylog.txt
+      working-directory: ./rclgo 
+      
+    - name: Save artifacts
+      uses: actions/upload-artifact@v1
+      with:
+          name: 'rcl_go_greeter_log.txt'
+          path: ./rclgo/mylog.txt
+          
+
