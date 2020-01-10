@@ -1,4 +1,4 @@
-name: CI
+name: Iniital testing github actions
 on:
   push:
     branches:
@@ -14,10 +14,13 @@ jobs:
 
     steps:
     - name: "Checkout the repository"
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        path: ./rclgo
     
     - name: Generate the docker images
       run: docker-compose build
+      working-directory: ./rclgo
     
     - name: Check docker images have been generated
       run: docker ps -a
@@ -25,11 +28,12 @@ jobs:
     - name: Execute containers during 1 minute and save output
       run: docker-compose up >  mylog.txt
       timeout-minutes: 1
+      working-directory: ./rclgo
       
     - name: Save artifacts
       uses: actions/upload-artifact@v1
       with:
           name: 'rcl_go_greeter_$(date +"%Y_%m_%d_%I_%M").txt'
-          path: mylog.txt
+          path: ./rclgo/mylog.txt
           
 
