@@ -24,18 +24,29 @@ jobs:
       working-directory: ./rclgo
     
     - name: Check docker images have been generated
-      run: docker ps -a
+      run: docker images
     
-    - name: Execute containers during 1 minute and save output
-      run: docker-compose up >  mylog.txt
-      timeout-minutes: 1
-      continue-on-error: true
+    - name: Execute containers in daemon mode
+      run: docker-compose up -d 
       working-directory: ./rclgo
+      
+    - name: Sleep for 15 seconds
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '15s'
+          
+    - name: Kill containers
+      run: docker-compose kill 
+      working-directory: ./rclgo 
+      
+    - name: Save docker-compose logs
+      run: docker-compose logs -t > mylog.txt
+      working-directory: ./rclgo 
       
     - name: Save artifacts
       uses: actions/upload-artifact@v1
       with:
-          name: 'rcl_go_greeter_$(date +"%Y_%m_%d_%I_%M").txt'
+          name: 'rcl_go_greeter_log.txt'
           path: ./rclgo/mylog.txt
           
 
