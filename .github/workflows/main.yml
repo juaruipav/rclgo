@@ -30,7 +30,7 @@ jobs:
       
     - name: Save artifacts
       uses: actions/upload-artifact@v1
-        with:
+      with:
           name: 'rcl_go_greeter_$(date +"%Y_%m_%d_%I_%M").txt'
           path: ./rclgo/mylog.txt
           
