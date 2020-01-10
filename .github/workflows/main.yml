@@ -18,20 +18,18 @@ jobs:
     
     - name: Generate the docker images
       run: docker-compose build
-      working-directory: ./rclgo
     
     - name: Check docker images have been generated
       run: docker ps -a
     
     - name: Execute containers during 1 minute and save output
       run: docker-compose up >  mylog.txt
-      working-directory: ./rclgo
       timeout-minutes: 1
       
     - name: Save artifacts
       uses: actions/upload-artifact@v1
       with:
           name: 'rcl_go_greeter_$(date +"%Y_%m_%d_%I_%M").txt'
-          path: ./rclgo/mylog.txt
+          path: mylog.txt
           
 
