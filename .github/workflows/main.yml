@@ -29,6 +29,7 @@ jobs:
     - name: Execute containers during 1 minute and save output
       run: docker-compose up >  mylog.txt
       timeout-minutes: 1
+      continue-on-error: true
       working-directory: ./rclgo
       
     - name: Save artifacts
