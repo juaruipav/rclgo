@@ -15,6 +15,18 @@ Following the structure of the [RCL API](http://docs.ros2.org/latest/api/rcl/ind
 
 The goal of this repository is to be as closed as possible to the official C API. When binding is complete, a good option would be to bind this rclgo library with more native/complex behavior (or even with new types/interfaces)
 
+## Running the example
+Recently, a working Dockerfile and a docker-compose file have been added to the repo. To get the previous example working, just run:
+
+```
+docker-compose build && docker-compose up 
+```
+
+Since containers are using the bridge mode (172.17.0.1 virtual subnet by docker), if we have ros2 already install in the host, just open a terminal and check the nodes and topics:
+
+```
+ros2 topic list
+```
 
 ## Pre-requisites
 
