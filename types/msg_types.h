@@ -35,18 +35,28 @@
 
 #include <std_msgs/msg/bool.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Bool)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Bool)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Bool)
 
 #include <std_msgs/msg/byte.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Byte)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Byte)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Byte)
 
 #include <std_msgs/msg/char.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Char)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Char)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Char)
 
 #include <std_msgs/msg/color_rgba.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,ColorRGBA)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,ColorRGBA)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,ColorRGBA)
 
 #include <std_msgs/msg/empty.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Empty)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Empty)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Empty)
 
 #include <std_msgs/msg/float32.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Float32)
@@ -60,6 +70,8 @@ CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Float64)
 
 #include <std_msgs/msg/header.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Header)
+CREATE_MSG_INIT_HEADER(std_msgs,msg,Header)
+CREATE_MSG_DESTROY_HEADER(std_msgs,msg,Header)
 
 #include <std_msgs/msg/int16.h>
 GET_MSG_TYPE_SUPPORT_HEADER(std_msgs,msg,Int16)

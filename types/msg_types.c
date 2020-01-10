@@ -3,7 +3,42 @@
 
 ///////////////////////////////////////
 ///// STD MSGS
-//////////////////////////////////////
+///////////////////////////////////////////
+
+GET_MSG_TYPE_SUPPORT(std_msgs,msg,Header)
+CREATE_MSG_INIT(std_msgs,msg,Header)
+CREATE_MSG_DESTROY(std_msgs,msg,Header)
+
+///////////////////////////////////////////
+
+GET_MSG_TYPE_SUPPORT(std_msgs,msg,Empty)
+CREATE_MSG_INIT(std_msgs,msg,Empty)
+CREATE_MSG_DESTROY(std_msgs,msg,Empty)
+
+///////////////////////////////////////////
+
+
+GET_MSG_TYPE_SUPPORT(std_msgs,msg,ColorRGBA)
+CREATE_MSG_INIT(std_msgs,msg,ColorRGBA)
+CREATE_MSG_DESTROY(std_msgs,msg,ColorRGBA)
+
+///////////////////////////////////////////
+
+GET_MSG_TYPE_SUPPORT(std_msgs,msg,Char)
+CREATE_MSG_INIT(std_msgs,msg,Char)
+CREATE_MSG_DESTROY(std_msgs,msg,Char)
+
+///////////////////////////////////////////
+
+GET_MSG_TYPE_SUPPORT(std_msgs,msg,Byte)
+CREATE_MSG_INIT(std_msgs,msg,Byte)
+CREATE_MSG_DESTROY(std_msgs,msg,Byte)
+
+///////////////////////////////////////////
+
+GET_MSG_TYPE_SUPPORT(std_msgs,msg,Bool)
+CREATE_MSG_INIT(std_msgs,msg,Bool)
+CREATE_MSG_DESTROY(std_msgs,msg,Bool)
 
 ///////////////////////////////////////////
 

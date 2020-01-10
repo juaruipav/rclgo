@@ -44,10 +44,18 @@ func replaceUnderscoreAndCamelCase(input string) string {
 func getGoTypeForCast(myMsg *MyMsg, typesTable []EquivalentTypes) {
 
 	for _, mytype := range typesTable {
-		if mytype.Gotype == myMsg.MsgNameOrig {
-			myMsg.GoTypeForCast = mytype.Gotype
-			myMsg.CGoTypeForCast = mytype.Ctype
+
+		if myMsg.MsgNameOrig == "char" {
+			// myMsg.GoTypeForCast = "string"
+			// myMsg.CGoTypeForCast = "C.GoString"
+
+		} else {
+			if mytype.Gotype == myMsg.MsgNameOrig {
+				myMsg.GoTypeForCast = mytype.Gotype
+				myMsg.CGoTypeForCast = mytype.Ctype
+			}
 		}
+
 	}
 }
 
@@ -92,6 +100,7 @@ func (msg *{{.PackageCamelCase}}{{.MsgNameCamelCase}}) Set{{.MsgNameCamelCase}}(
 	msg.data.data = {{.CGoTypeForCast}}(data)
 }
 
+
 func (msg *{{.PackageCamelCase}}{{.MsgNameCamelCase}}) Get{{.MsgNameCamelCase}}() {{.MsgNameOrig}} {
 	return {{.GoTypeForCast}}(msg.data.data)
 }
@@ -133,6 +142,9 @@ func main() {
 		{"uint16", "C.ushort"},
 		{"uint32", "C.uint"},
 		{"uint64", "C.ulong"},
+		{"char", "C.GoString"},
+		{"bool", "C.bool"},
+		{"byte", "C.uchar"},
 	}
 
 	msgs := []MyMsg{
@@ -146,6 +158,9 @@ func main() {
 		{"std_msgs", "msg", "uint64", "", "", "", "", ""},
 		{"std_msgs", "msg", "float32", "", "", "", "", ""},
 		{"std_msgs", "msg", "float64", "", "", "", "", ""},
+		{"std_msgs", "msg", "bool", "", "", "", "", ""},
+		// {"std_msgs", "msg", "char", "", "", "", "", ""},
+		{"std_msgs", "msg", "byte", "", "", "", "", ""},
 	}
 
 	for _, msg := range msgs {
@@ -168,7 +183,7 @@ func main() {
 
 			defer f.Close()
 		} else {
-			fmt.Printf("File %s already exist, not overwritting\n " + path)
+			fmt.Printf("File %v already exist, not overwritting\n " + path)
 		}
 
 	}
