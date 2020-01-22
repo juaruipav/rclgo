@@ -1,8 +1,8 @@
 # Starting from golang image
 FROM golang:latest as go-docker
 
-# Our final image should have ros:bouncy already installed
-FROM ros:bouncy
+# Our final image should have ros:eloquent already installed
+FROM ros:eloquent
 
 # Get the binaries from previous docker stage:
 COPY --from=go-docker /usr/local/go /usr/local/go
@@ -21,4 +21,4 @@ ENV GOPATH /home/${user}/go
 ENV GOROOT /usr/local/go
 
 # Checkout rclgo code:
-RUN git clone https://github.com/juaruipav/rclgo /home/${user}/go/src/rclgo
+RUN git clone https://github.com/mattanimation/rclgo /home/${user}/go/src/rclgo

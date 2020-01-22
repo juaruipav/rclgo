@@ -1,7 +1,7 @@
 package rcl
 
-// #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrcutils
+// #cgo CFLAGS: -I/opt/ros/eloquent/include
+// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -lrcl -lrcutils
 // #include "rcl/rcl.h"
 import "C"
 import (

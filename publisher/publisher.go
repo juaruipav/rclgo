@@ -1,7 +1,7 @@
 package publisher
 
-// #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
+// #cgo CFLAGS: -I/opt/ros/eloquent/include
+// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
 // #include <rosidl_generator_c/message_type_support_struct.h>
 // #include "rcl/rcl.h"
 // #include <std_msgs/msg/string.h>
