@@ -57,6 +57,10 @@ type Message interface {
 	DestroyMessage()
 }
 
+type Context struct {
+	RCLContext C.rcl_context_t
+}
+
 // func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {
 // 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Bool()}
 // }

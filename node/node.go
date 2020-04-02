@@ -6,8 +6,9 @@ package node
 // #include "rcl/node.h"
 import "C"
 import (
-	"rclgo/types"
 	"unsafe"
+
+	"github.com/richardrigby/rclgo/types"
 )
 
 type Node struct {
@@ -28,13 +29,13 @@ func GetNodeDefaultOptions() NodeOptions {
 	return NodeOptions{&defOpts}
 }
 
-func NodeInit(node Node, name string, namespace string, nodeOptions NodeOptions) types.RCLRetT {
+func NodeInit(node Node, name string, namespace string, ctx types.Context, nodeOptions NodeOptions) types.RCLRetT {
 
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 	cNameSpace := C.CString(namespace)
 	defer C.free(unsafe.Pointer(cNameSpace))
-	return types.RCLRetT(C.rcl_node_init(node.RCLNode, cName, cNameSpace, nodeOptions.RCLNodeOptions))
+	return types.RCLRetT(C.rcl_node_init(node.RCLNode, cName, cNameSpace, *C.rcl_context_t(ctx.RCLContext), nodeOptions.RCLNodeOptions))
 }
 
 func NodeFini(node Node) {

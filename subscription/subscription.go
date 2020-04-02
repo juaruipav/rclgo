@@ -16,9 +16,11 @@ package subscription
 //}
 import "C"
 import (
-	"rclgo/node"
-	"rclgo/types"
 	"unsafe"
+
+	"github.com/richardrigby/rclgo/types"
+
+	"github.com/richardrigby/rclgo/node"
 )
 
 type Subscription struct {

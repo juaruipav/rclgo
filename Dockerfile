@@ -21,4 +21,4 @@ ENV GOPATH /home/${user}/go
 ENV GOROOT /usr/local/go
 
 # Checkout rclgo code:
-RUN git clone https://github.com/mattanimation/rclgo /home/${user}/go/src/rclgo
+RUN git clone https://github.com/richardrigby/rclgo.git /home/${user}/go/src/rclgo

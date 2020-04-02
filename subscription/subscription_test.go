@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"rclgo/node"
-	"rclgo/rcl"
-	"rclgo/types"
 	"syscall"
 	"testing"
 	"time"
+
+	"github.com/richardrigby/rclgo/node"
+	"github.com/richardrigby/rclgo/rcl"
+	"github.com/richardrigby/rclgo/types"
 )
 
 func TestSubscription(t *testing.T) {

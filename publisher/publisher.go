@@ -17,9 +17,10 @@ package publisher
 //}
 import "C"
 import (
-	"rclgo/node"
-	"rclgo/types"
 	"unsafe"
+
+	"github.com/richardrigby/rclgo/node"
+	"github.com/richardrigby/rclgo/types"
 )
 
 type Publisher struct {

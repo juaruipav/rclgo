@@ -2,9 +2,10 @@ package node
 
 import (
 	"fmt"
-	"rclgo/rcl"
 	"testing"
 	"time"
+
+	"github.com/richardrigby/rclgo/rcl"
 )
 
 func TestNodeCreation(t *testing.T) {

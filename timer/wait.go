@@ -5,10 +5,11 @@ package timer
 // #include "rcl/rcl.h"
 import "C"
 import (
-	"rclgo/rcl"
-	"rclgo/subscription"
-	"rclgo/types"
 	"unsafe"
+
+	"github.com/richardrigby/rclgo/rcl"
+	"github.com/richardrigby/rclgo/subscription"
+	"github.com/richardrigby/rclgo/types"
 )
 
 type WaitSet struct {

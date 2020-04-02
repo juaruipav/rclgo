@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"rclgo/node"
-	"rclgo/rcl"
-	"rclgo/types"
 	"strconv"
 	"syscall"
 	"testing"
 	"time"
+
+	"github.com/richardrigby/rclgo/node"
+	"github.com/richardrigby/rclgo/rcl"
+	"github.com/richardrigby/rclgo/types"
 )
 
 // func BenchmarkFoo(b *testing.B) {
@@ -86,9 +87,10 @@ func TestPublisherStringMsg(t *testing.T) {
 	rcl.Init()
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
+	myContext := rcl.GetZeroInitializedContext()
 
 	fmt.Printf("Creating the node! \n")
-	node.NodeInit(myNode, "GoPublisher", "", myNodeOpts)
+	node.NodeInit(myNode, "GoPublisher", "", myContext, myNodeOpts)
 
 	//Create the publisher
 	myPub := GetZeroInitializedPublisher()
