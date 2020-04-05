@@ -1,7 +1,7 @@
 package publisher
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
+// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
 // #include <rosidl_generator_c/message_type_support_struct.h>
 // #include "rcl/rcl.h"
 // #include <std_msgs/msg/string.h>
@@ -12,7 +12,7 @@ package publisher
 //			return 1;
 //		// Payload assignation to the message
 //		msg->data = data;
-//		int retValue = rcl_publish(publisher, msg->data);
+//		int retValue = rcl_publish(publisher, msg->data, NULL);
 //		return retValue;
 //}
 import "C"
@@ -72,5 +72,5 @@ func Publish(publisher Publisher, msg types.MessageTypeSupport, data types.Messa
 }
 
 func IsValid(publisher Publisher) bool {
-	return bool(C.rcl_publisher_is_valid(publisher.RCLPublisher, nil))
+	return bool(C.rcl_publisher_is_valid(publisher.RCLPublisher))
 }

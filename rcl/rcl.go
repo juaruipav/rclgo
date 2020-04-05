@@ -1,31 +1,44 @@
 package rcl
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -lrcl -lrcutils
+// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
 // #include "rcl/rcl.h"
 import "C"
 import (
-	"unsafe"
+	"fmt"
 
+	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/types"
 )
 
 //Init represents the global initialization of rcl. This must be called before using any rcl functions.
-func Init() types.RCLRetT {
+func Init(ctx types.Context) types.RCLRetT {
 
-	argv := make([]*C.char, 1)
-	argv[0] = C.CString("")
-	defer C.free(unsafe.Pointer(argv[0]))
-	return types.RCLRetT(C.rcl_init(0, &argv[0], C.rcl_get_zero_initialized_init_options(), C.rcl_get_zero_initialized_context()))
-}
+	var opts = cwrap.RclGetZeroInitializedInitOptions()
+	alloc := cwrap.RclGetDefaultAllocator()
+	suc := cwrap.RclInitOptionsInit(&opts, alloc)
+	if suc != 0 {
+		fmt.Println("suc")
+		return types.RCLRetT(suc)
+	}
+	suc2 := cwrap.RclInitOptionsFini(&opts)
+	if suc2 != 0 {
+		fmt.Println("suc2")
+		return types.RCLRetT(suc2)
+	}
 
-func GetZeroInitializedContext() types.Context {
-	return types.Context{RCLContext: C.rcl_get_zero_initialized_context()}
+	ret := cwrap.RclInit(
+		0,
+		[]string{},
+		&opts,
+		&ctx.RCLContext,
+	)
+	return types.RCLRetT(ret)
 }
 
 //Shutdown represents Signal global shutdown of rcl.
 func Shutdown(ctx types.Context) {
-	C.rcl_shutdown(*C.rcl_context_t(ctx.RCLContext))
+	cwrap.RclShutdown(&ctx.RCLContext)
 }
 
 // //GetInstanceID returns an uint64_t number that is unique for the latest rcl_init call.

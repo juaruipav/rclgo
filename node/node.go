@@ -1,43 +1,46 @@
 package node
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -lrcl -lrcutils
+// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
 // #include "rcl/rcl.h"
 // #include "rcl/node.h"
 import "C"
 import (
-	"unsafe"
-
+	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/types"
 )
 
 type Node struct {
-	RCLNode *C.rcl_node_t
+	RCLNode *cwrap.RclNode
 }
 
 type NodeOptions struct {
-	RCLNodeOptions *C.rcl_node_options_t
+	RCLNodeOptions *cwrap.RclNodeOptions
 }
 
 func GetZeroInitializedNode() Node {
-	zeroNode := C.rcl_get_zero_initialized_node()
-	return Node{&zeroNode}
+	zeroNode := cwrap.RclGetZeroInitializedNode()
+	return Node{RCLNode: &zeroNode}
 }
 
 func GetNodeDefaultOptions() NodeOptions {
-	defOpts := C.rcl_node_get_default_options()
-	return NodeOptions{&defOpts}
+	defOpts := cwrap.RclNodeGetDefaultOptions()
+	return NodeOptions{RCLNodeOptions: &defOpts}
 }
 
 func NodeInit(node Node, name string, namespace string, ctx types.Context, nodeOptions NodeOptions) types.RCLRetT {
-
-	cName := C.CString(name)
-	defer C.free(unsafe.Pointer(cName))
-	cNameSpace := C.CString(namespace)
-	defer C.free(unsafe.Pointer(cNameSpace))
-	return types.RCLRetT(C.rcl_node_init(node.RCLNode, cName, cNameSpace, *C.rcl_context_t(ctx.RCLContext), nodeOptions.RCLNodeOptions))
+	nodeInit := cwrap.RclNodeInit(
+		node.RCLNode,
+		name,
+		namespace,
+		&ctx.RCLContext,
+		nodeOptions.RCLNodeOptions,
+	)
+	return types.RCLRetT(
+		nodeInit,
+	)
 }
 
 func NodeFini(node Node) {
-	C.rcl_node_fini(node.RCLNode)
+	cwrap.RclNodeFini(node.RCLNode)
 }

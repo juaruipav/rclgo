@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/node"
 	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
@@ -30,11 +31,12 @@ func TestSubscription(t *testing.T) {
 	}()
 	// Initialization
 	rcl.Init()
+	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContext()}
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	node.NodeInit(myNode, "GoSubscriber", "", myNodeOpts)
+	node.NodeInit(myNode, "GoSubscriber", "", ctx, myNodeOpts)
 	//Create the subscriptor
 	mySub := GetZeroInitializedSubscription()
 	mySubOpts := GetSubscriptionDefaultOptions()
@@ -52,7 +54,7 @@ func TestSubscription(t *testing.T) {
 loop:
 	for {
 
-		retRCL := TakeMessage(mySub, myMsg.GetMessage(), myMsg.GetData())
+		retRCL := TakeMessage(mySub, &myMsg.MsgInfo, myMsg.GetData())
 
 		if retRCL == types.RCL_RET_OK {
 			fmt.Printf("(Suscriber) Received %s\n", myMsg.GetDataAsString())
@@ -72,6 +74,6 @@ loop:
 	myMsg.DestroyMessage()
 	SubscriptionFini(mySub, myNode)
 	node.NodeFini(myNode)
-	rcl.Shutdown()
+	rcl.Shutdown(ctx)
 
 }
