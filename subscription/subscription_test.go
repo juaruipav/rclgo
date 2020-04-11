@@ -1,4 +1,4 @@
-package subscription
+package subscription_test
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/node"
 	"github.com/richardrigby/rclgo/rcl"
+	"github.com/richardrigby/rclgo/subscription"
 	"github.com/richardrigby/rclgo/types"
 )
 
@@ -30,7 +30,7 @@ func TestSubscription(t *testing.T) {
 		}
 	}()
 	// Initialization
-	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContextPtr()}
+	ctx := types.GetZeroInitializedContext()
 	err := rcl.Init(&ctx)
 	if err != nil {
 		t.Fatalf("rcl.Init: %s", err)
@@ -45,14 +45,14 @@ func TestSubscription(t *testing.T) {
 	}
 
 	//Create the subscriptor
-	mySub := GetZeroInitializedSubscription()
-	mySubOpts := GetSubscriptionDefaultOptions()
+	mySub := subscription.GetZeroInitializedSubscription()
+	mySubOpts := subscription.GetSubscriptionDefaultOptions()
 
 	//Creating the type
 	msgType := types.GetMessageTypeFromStdMsgsString()
 
 	fmt.Printf("Creating the subscriber! \n")
-	err = SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
+	err = subscription.SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
 	if err != nil {
 		t.Fatalf("SubscriptionsInit: %s", err)
 	}
@@ -63,7 +63,7 @@ func TestSubscription(t *testing.T) {
 
 loop:
 	for {
-		err = TakeMessage(mySub, &myMsg.MsgInfo, myMsg.GetData())
+		err = subscription.TakeMessage(mySub, &myMsg.MsgInfo, myMsg.GetData())
 		if err == nil {
 			fmt.Printf("(Suscriber) Received %s\n", myMsg.GetDataAsString())
 		}
@@ -80,7 +80,7 @@ loop:
 	fmt.Printf("Shutting down!! \n")
 
 	myMsg.DestroyMessage()
-	err = SubscriptionFini(mySub, myNode)
+	err = subscription.SubscriptionFini(mySub, myNode)
 	if err != nil {
 		t.Fatalf("SubscriptionFini: %s", err)
 	}

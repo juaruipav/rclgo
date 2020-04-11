@@ -3,13 +3,13 @@ package types
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
 // #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
 // #include <rcl/rcl.h>
-// #include "../cwrap/msg_types.h"
+// #include "../internal/msg_types.h"
 import "C"
 
 import (
 	"unsafe"
 
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
 type StdMsgsString struct {

@@ -1,4 +1,4 @@
-package publisher
+package publisher_test
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/node"
+	"github.com/richardrigby/rclgo/publisher"
 	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
 )
@@ -85,7 +85,7 @@ func TestPublisherStringMsg(t *testing.T) {
 	}()
 
 	// Initialization
-	myContext := types.Context{RCLContext: cwrap.GetZeroInitializedContextPtr()}
+	myContext := types.GetZeroInitializedContext()
 	err := rcl.Init(&myContext)
 	if err != nil {
 		t.Fatalf("rcl.Init failed: %s\n", err)
@@ -100,8 +100,8 @@ func TestPublisherStringMsg(t *testing.T) {
 	}
 
 	//Create the publisher
-	myPub := GetZeroInitializedPublisher()
-	myPubOpts := GetPublisherDefaultOptions()
+	myPub := publisher.GetZeroInitializedPublisher()
+	myPubOpts := publisher.GetPublisherDefaultOptions()
 
 	//Create the msg type
 	var myMsg types.StdMsgsString
@@ -109,7 +109,7 @@ func TestPublisherStringMsg(t *testing.T) {
 
 	fmt.Printf("Creating the publisher! \n")
 	//Initializing the publisher
-	err = PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
+	err = publisher.PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
 	if err != nil {
 		t.Fatalf("PublisherInit failed: %s\n", err)
 	}
@@ -120,7 +120,7 @@ loop:
 		//Update my msg
 		myMsg.SetText("Greetings from GO! #" + strconv.Itoa(index))
 		//Publish the message
-		err := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
+		err := publisher.Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
 		if err != nil {
 			t.Fatalf("Publish failed: %s\n", err)
@@ -144,7 +144,7 @@ loop:
 	fmt.Printf("Shutting down!! \n")
 
 	myMsg.DestroyMessage()
-	err = PublisherFini(myPub, myNode)
+	err = publisher.PublisherFini(myPub, myNode)
 	if err != nil {
 		t.Fatalf("PublishFini: %s\n", err)
 	}

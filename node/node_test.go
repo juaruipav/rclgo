@@ -1,37 +1,35 @@
-package node
+package node_test
 
 import (
 	"fmt"
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/cwrap"
+	"github.com/richardrigby/rclgo/node"
 	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
 )
 
 func TestNodeCreation(t *testing.T) {
 	// Initialization
-	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContextPtr()}
+	ctx := types.GetZeroInitializedContext()
 	err := rcl.Init(&ctx)
 	if err != nil {
 		t.Fatalf("rcl.Init failed: %s\n", err)
 	}
-	fmt.Printf("ctx.RCLContext: %v\n", ctx)
-	fmt.Printf("ctx.RCLContext: %v\n", ctx.RCLContext)
 
-	myNode := GetZeroInitializedNode()
-	myNodeOpts := GetNodeDefaultOptions()
+	myNode := node.GetZeroInitializedNode()
+	myNodeOpts := node.GetNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	err = NodeInit(myNode, "fakeNameForNode", "", ctx, myNodeOpts)
+	err = node.NodeInit(myNode, "fakeNameForNode", "", ctx, myNodeOpts)
 	if err != nil {
 		t.Fatalf("NodeInit failed: %s\n", err)
 	}
 
 	time.Sleep(5 * time.Second) // or runtime.Gosched() or similar per @misterbee
 
-	err = NodeFini(myNode)
+	err = node.NodeFini(myNode)
 	if err != nil {
 		t.Fatalf("NodeFini failed: %s\n", err)
 	}

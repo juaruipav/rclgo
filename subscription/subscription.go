@@ -16,7 +16,7 @@ package subscription
 //}
 import "C"
 import (
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/node"
 	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"

@@ -5,7 +5,7 @@ package rcl
 // #include "rcl/rcl.h"
 import "C"
 import (
-	"github.com/richardrigby/rclgo/cwrap"
+	"github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/types"
 )
 

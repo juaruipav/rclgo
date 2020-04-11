@@ -11,7 +11,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
 type StdMsgsFloat32 struct {

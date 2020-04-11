@@ -51,5 +51,6 @@ func RclNodeInit(
 		(*C.rcl_context_t)(ctx),
 		(*C.rcl_node_options_t)(options),
 	)
+
 	return int(ret)
 }

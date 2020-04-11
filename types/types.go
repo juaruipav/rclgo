@@ -9,7 +9,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
 type RCLRetT int
@@ -128,6 +128,12 @@ type Context struct {
 type StdMsgsBase struct {
 	MsgType MessageTypeSupport
 	MsgInfo cwrap.RmwMessageInfo
+}
+
+//
+func GetZeroInitializedContext() Context {
+	ctxPtr := cwrap.GetZeroInitializedContextPtr()
+	return Context{ctxPtr}
 }
 
 // func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {
