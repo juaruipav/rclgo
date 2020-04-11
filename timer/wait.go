@@ -1,9 +1,5 @@
 package timer
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include <rcl/rcl.h>
-import "C"
 import (
 	cwrap "github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/subscription"
@@ -25,8 +21,6 @@ func WaitSetInit(
 	ctx cwrap.RclContextPtr,
 	allo cwrap.RclAllocator,
 ) types.RCLRetT {
-
-	// allocatorPtr := (*C.struct_rcutils_allocator_t)(unsafe.Pointer(allo.Allocator))
 	retValue := cwrap.RclWaitSetInit(
 		waitSet.RCLWaitSet,
 		numSubs,
@@ -47,9 +41,6 @@ func WaitSetFini(waitSet WaitSet) types.RCLRetT {
 }
 
 func WaitSetGetAllocator(waitSet WaitSet, allocator *cwrap.RclAllocator) types.RCLRetT {
-	// allocatorPtr := (*C.struct_rcutils_allocator_t)(unsafe.Pointer(allocator.Allocator))
-	// return types.RCLRetT(C.rcl_wait_set_get_allocator(waitset.RCLWaitSet, allocatorPtr))
-
 	ret := cwrap.RclWaitSetGetAllocator(waitSet.RCLWaitSet, allocator)
 	return types.RCLRetT(ret)
 }
@@ -81,8 +72,6 @@ func WaitSetGetAllocator(waitSet WaitSet, allocator *cwrap.RclAllocator) types.R
  * \return `RCL_RET_ERROR` if an unspecified error occurs.
  */
 func WaitSetAddsubscription(waitSet WaitSet, subscription subscription.Subscription) types.RCLRetT {
-	// subscriptionPtr := (*C.rcl_subscription_t)(unsafe.Pointer(subscription.RCLSubscription))
-	// return types.RCLRetT(C.rcl_wait_set_add_subscription(waitset.RCLWaitSet, subscriptionPtr, nil))
 	ret := cwrap.RclWaitSetAddSubscription(waitSet.RCLWaitSet, subscription.RCLSubscription, nil)
 	return types.RCLRetT(ret)
 }

@@ -1,10 +1,5 @@
 package node
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
-// #include "rcl/node.h"
-import "C"
 import (
 	cwrap "github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/rcl"

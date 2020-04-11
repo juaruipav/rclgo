@@ -3,12 +3,6 @@ package cwrap
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
 // #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
 // #include "msg_types.h"
-// char * getCharFromStruct(std_msgs__msg__String* msg){
-//		if(msg!=NULL)
-//			return msg->data.data;
-//		else
-//			return "";
-//}
 import "C"
 import "unsafe"
 
@@ -280,8 +274,13 @@ func (msg *StdMsgs_MsgString) Set(s string) {
 
 //
 func (msg *StdMsgs_MsgString) String() string {
-	var data = (*C.std_msgs__msg__String)(msg)
-	return C.GoString(C.getCharFromStruct(data))
+	var cMsg = (*C.std_msgs__msg__String)(msg)
+	if cMsg == nil {
+		return ""
+	}
+	var d C.rosidl_generator_c__String = cMsg.data
+	var c *C.char = d.data
+	return C.GoString(c)
 }
 
 //

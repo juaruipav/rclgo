@@ -2,7 +2,7 @@ package cwrap
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
 // #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
+// #include <rcl/rcl.h>
 import "C"
 
 import (
@@ -10,7 +10,7 @@ import (
 )
 
 type RcutilsErrorState struct {
-	msg string
+	msg  string
 	file string
 	line uint64
 }
@@ -32,13 +32,25 @@ func (es *RcutilsErrorState) String() string {
 //
 func RcutilsGetErrorState() *RcutilsErrorState {
 	var errState = C.rcutils_get_error_state()
-	if errState == nil { return nil }
-	var ret = RcutilsErrorState {
-		msg: C.GoString(&errState.message[0]),
+	if errState == nil {
+		return nil
+	}
+	var ret = RcutilsErrorState{
+		msg:  C.GoString(&errState.message[0]),
 		file: C.GoString(&errState.file[0]),
 		line: uint64(errState.line_number),
 	}
 
 	C.rcutils_reset_error()
 	return &ret
+}
+
+func RcutilsGetZeroInitializedAllocator() RclAllocator {
+	ret := C.rcutils_get_zero_initialized_allocator()
+	return RclAllocator(ret)
+}
+
+func RcutilsGetDefaultAllocator() RclAllocator {
+	ret := C.rcutils_get_default_allocator()
+	return RclAllocator(ret)
 }

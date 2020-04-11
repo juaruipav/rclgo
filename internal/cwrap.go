@@ -1,8 +1,7 @@
 package cwrap
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
+// #include <rcl/rcl.h>
 // #include <stdlib.h>
 // // This is needed to avoid `panic: runtime error: cgo argument has Go pointer
 // // to Go pointer` when passing an `rcl_node_t*` to a C function. `rcl_node_t`
@@ -35,7 +34,7 @@ type RclAllocator C.rcl_allocator_t
 
 //
 func GetZeroInitializedContextPtr() RclContextPtr {
-	var ctxPtr (*C.rcl_context_t) = C.get_zero_context_ptr();
+	var ctxPtr (*C.rcl_context_t) = C.get_zero_context_ptr()
 	return RclContextPtr(ctxPtr)
 }
 

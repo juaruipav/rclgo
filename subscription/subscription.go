@@ -1,20 +1,5 @@
 package subscription
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include <rosidl_generator_c/message_type_support_struct.h>
-// #include "rcl/rcl.h"
-// #include <rcl/error_handling.h>
-// #include "std_msgs/msg/string.h"
-//#define ZERO_ALLOCATE(s) \
-//  rcl_get_default_allocator().zero_allocate(s, 1, rcl_get_default_allocator().state)
-// int my_rcl_take (const rcl_subscription_t * subscription, rosidl_message_type_support_t* msg,void * data){
-//		if(msg == NULL || subscription == NULL || data == NULL)
-//			return 1;
-//		int retValue = rcl_take(subscription, msg, data, NULL);
-//		return retValue;
-//}
-import "C"
 import (
 	cwrap "github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/node"
@@ -31,7 +16,6 @@ type SubscriptionOptions struct {
 }
 
 func GetZeroInitializedSubscription() Subscription {
-	// zeroSubscription := C.rcl_get_zero_initialized_subscription()
 	zeroSubscription := cwrap.RclGetZeroInitializedSubscription()
 	return Subscription{&zeroSubscription}
 }
