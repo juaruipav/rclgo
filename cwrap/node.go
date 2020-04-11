@@ -19,6 +19,12 @@ func RclNodeGetDefaultOptions() RclNodeOptions {
 }
 
 //
+func RclGetZeroInitializedNode() RclNode {
+	var zeroNode C.rcl_node_t = C.rcl_get_zero_initialized_node()
+	return RclNode(zeroNode)
+}
+
+//
 func RclNodeFini(node *RclNode) int {
 	cNode := (*C.rcl_node_t)(node)
 	ret := C.rcl_node_fini(cNode)
@@ -30,7 +36,7 @@ func RclNodeInit(
 	node *RclNode,
 	name string,
 	namespace string,
-	ctx *RclContext,
+	ctx RclContextPtr,
 	options *RclNodeOptions,
 ) int {
 	var cName *C.char = C.CString(name)

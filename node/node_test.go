@@ -11,24 +11,33 @@ import (
 )
 
 func TestNodeCreation(t *testing.T) {
-
-	// * TODO for this test: check the retValues from C functions
-
 	// Initialization
-	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContext()}
-	suc := rcl.Init(ctx)
-	if suc != 0 {
-		t.Fatalf("rcl.Init failed: %s\n", suc)
+	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContextPtr()}
+	err := rcl.Init(&ctx)
+	if err != nil {
+		t.Fatalf("rcl.Init failed: %s\n", err)
 	}
-	fmt.Println(ctx)
+	fmt.Printf("ctx.RCLContext: %v\n", ctx)
+	fmt.Printf("ctx.RCLContext: %v\n", ctx.RCLContext)
+
 	myNode := GetZeroInitializedNode()
-	fmt.Println(myNode)
 	myNodeOpts := GetNodeDefaultOptions()
-	fmt.Println(myNodeOpts)
 
 	fmt.Printf("Creating the node! \n")
-	NodeInit(myNode, "fakeNameForNode", "", ctx, myNodeOpts)
-	time.Sleep(10 * time.Second) // or runtime.Gosched() or similar per @misterbee
-	NodeFini(myNode)
-	rcl.Shutdown(ctx)
+	err = NodeInit(myNode, "fakeNameForNode", "", ctx, myNodeOpts)
+	if err != nil {
+		t.Fatalf("NodeInit failed: %s\n", err)
+	}
+
+	time.Sleep(5 * time.Second) // or runtime.Gosched() or similar per @misterbee
+
+	err = NodeFini(myNode)
+	if err != nil {
+		t.Fatalf("NodeFini failed: %s\n", err)
+	}
+
+	err = rcl.Shutdown(ctx)
+	if err != nil {
+		t.Fatalf("rcl.Shutdown failed: %s\n", err)
+	}
 }

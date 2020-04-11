@@ -18,7 +18,7 @@ func RclGetZeroInitializedWaitSet() RclWaitSet {
 func RclWaitSetInit(
 	waitSet *RclWaitSet,
 	numSubs, numGuards, numTimers, numClients, numServices, numEvents int,
-	ctx *RclContext,
+	ctx RclContextPtr,
 	allo RclAllocator,
 ) int {
 	var ret C.int32_t = C.rcl_wait_set_init(

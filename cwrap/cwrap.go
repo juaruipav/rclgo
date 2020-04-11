@@ -3,17 +3,29 @@ package cwrap
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
 // #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
 // #include "rcl/rcl.h"
+// #include <stdlib.h>
+// // This is needed to avoid `panic: runtime error: cgo argument has Go pointer
+// // to Go pointer` when passing an `rcl_node_t*` to a C function. `rcl_node_t`
+// // contains a pointer to an `rcl_context_t` which must therefore be a C
+// // pointer when calling C functions from Go. Remember to free this memory
+// // later.
+// rcl_context_t* get_zero_context_ptr() {
+// 	rcl_context_t* ptr = (rcl_context_t*)malloc(sizeof(rcl_context_t));
+// 	*ptr = rcl_get_zero_initialized_context();
+// }
+//
+// void free_context(rcl_context_t *ctx) {
+// 	free(ctx);
+// }
 import "C"
 
-import (
-	"unsafe"
-)
+import "unsafe"
 
 //
 type ROSIdlMessageTypeSupport C.rosidl_message_type_support_t
 
 //
-type RclContext C.rcl_context_t
+type RclContextPtr *C.rcl_context_t
 
 //
 type RclInitOptions C.rcl_init_options_t
@@ -22,15 +34,9 @@ type RclInitOptions C.rcl_init_options_t
 type RclAllocator C.rcl_allocator_t
 
 //
-func GetZeroInitializedContext() RclContext {
-	var ctx C.rcl_context_t = C.rcl_get_zero_initialized_context()
-	return RclContext(ctx)
-}
-
-//
-func RclGetZeroInitializedNode() RclNode {
-	var zeroNode C.rcl_node_t = C.rcl_get_zero_initialized_node()
-	return RclNode(zeroNode)
+func GetZeroInitializedContextPtr() RclContextPtr {
+	var ctxPtr (*C.rcl_context_t) = C.get_zero_context_ptr();
+	return RclContextPtr(ctxPtr)
 }
 
 //
@@ -49,7 +55,7 @@ func RclGetDefaultAllocator() RclAllocator {
 func RclInitOptionsInit(opt *RclInitOptions, allocator RclAllocator) int {
 	var ret C.int32_t = C.rcl_init_options_init(
 		(*C.rcl_init_options_t)(opt),
-		*(*C.rcl_allocator_t)(&allocator),
+		(C.rcl_allocator_t)(allocator),
 	)
 	return int(ret)
 }
@@ -63,7 +69,7 @@ func RclInitOptionsFini(opt *RclInitOptions) int {
 }
 
 //
-func RclInit(argc int, argv []string, opt *RclInitOptions, ctx *RclContext) int {
+func RclInit(argc int, argv []string, opt *RclInitOptions, ctx RclContextPtr) int {
 
 	var arg **C.char = nil
 	if len(argv) != 0 {
@@ -87,9 +93,11 @@ func RclInit(argc int, argv []string, opt *RclInitOptions, ctx *RclContext) int 
 }
 
 // RclShutdown represents Signal global shutdown of rcl.
-func RclShutdown(ctx *RclContext) {
+func RclShutdown(ctx RclContextPtr) int {
 	cCtx := (*C.rcl_context_t)(ctx)
-	C.rcl_shutdown(cCtx)
+	ret := C.rcl_shutdown(cCtx)
+	C.free_context(cCtx)
+	return int(ret)
 }
 
 //

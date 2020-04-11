@@ -44,6 +44,8 @@ const (
 	RCL_RET_WAIT_SET_FULL            = 902
 )
 
+func (r RCLRetT) Error() string { return r.String() }
+
 func (r RCLRetT) String() string {
 	switch r {
 	case 0:
@@ -120,7 +122,7 @@ type Message interface {
 }
 
 type Context struct {
-	RCLContext cwrap.RclContext
+	RCLContext cwrap.RclContextPtr
 }
 
 type StdMsgsBase struct {
