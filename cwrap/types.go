@@ -10,6 +10,7 @@ package cwrap
 //			return "";
 //}
 import "C"
+import "unsafe"
 
 //
 type StdMsgs_MsgBool C.std_msgs__msg__Bool
@@ -269,6 +270,13 @@ func GetMessageTypeFromStdMsgsMsgInt64() *ROSIdlMessageTypeSupport {
 
 //
 type StdMsgs_MsgString C.std_msgs__msg__String
+
+//
+func (msg *StdMsgs_MsgString) Set(s string) {
+	cText := C.CString(s)
+	defer C.free(unsafe.Pointer(cText))
+	C.rosidl_generator_c__String__assign(&msg.data, cText)
+}
 
 //
 func (msg *StdMsgs_MsgString) String() string {

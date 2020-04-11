@@ -30,13 +30,20 @@ func TestSubscription(t *testing.T) {
 		}
 	}()
 	// Initialization
-	rcl.Init()
-	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContext()}
+	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContextPtr()}
+	err := rcl.Init(&ctx)
+	if err != nil {
+		t.Fatalf("rcl.Init: %s", err)
+	}
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	node.NodeInit(myNode, "GoSubscriber", "", ctx, myNodeOpts)
+	err = node.NodeInit(myNode, "GoSubscriber", "", ctx, myNodeOpts)
+	if err != nil {
+		t.Fatalf("NodeInit: %s", err)
+	}
+
 	//Create the subscriptor
 	mySub := GetZeroInitializedSubscription()
 	mySubOpts := GetSubscriptionDefaultOptions()
@@ -45,7 +52,10 @@ func TestSubscription(t *testing.T) {
 	msgType := types.GetMessageTypeFromStdMsgsString()
 
 	fmt.Printf("Creating the subscriber! \n")
-	SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
+	err = SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
+	if err != nil {
+		t.Fatalf("SubscriptionsInit: %s", err)
+	}
 
 	//Creating the msg type
 	var myMsg types.StdMsgsString
@@ -53,10 +63,8 @@ func TestSubscription(t *testing.T) {
 
 loop:
 	for {
-
-		retRCL := TakeMessage(mySub, &myMsg.MsgInfo, myMsg.GetData())
-
-		if retRCL == types.RCL_RET_OK {
+		err = TakeMessage(mySub, &myMsg.MsgInfo, myMsg.GetData())
+		if err == nil {
 			fmt.Printf("(Suscriber) Received %s\n", myMsg.GetDataAsString())
 		}
 
@@ -72,8 +80,18 @@ loop:
 	fmt.Printf("Shutting down!! \n")
 
 	myMsg.DestroyMessage()
-	SubscriptionFini(mySub, myNode)
-	node.NodeFini(myNode)
-	rcl.Shutdown(ctx)
+	err = SubscriptionFini(mySub, myNode)
+	if err != nil {
+		t.Fatalf("SubscriptionFini: %s", err)
+	}
 
+	err = node.NodeFini(myNode)
+	if err != nil {
+		t.Fatalf("NodeFini: %s", err)
+	}
+
+	err = rcl.Shutdown(ctx)
+	if err != nil {
+		t.Fatalf("rcl.Shutdown: %s", err)
+	}
 }

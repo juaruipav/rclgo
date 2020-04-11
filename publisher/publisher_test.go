@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/node"
 	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
@@ -84,13 +85,19 @@ func TestPublisherStringMsg(t *testing.T) {
 	}()
 
 	// Initialization
-	rcl.Init()
+	myContext := types.Context{RCLContext: cwrap.GetZeroInitializedContextPtr()}
+	err := rcl.Init(&myContext)
+	if err != nil {
+		t.Fatalf("rcl.Init failed: %s\n", err)
+	}
 	myNode := node.GetZeroInitializedNode()
 	myNodeOpts := node.GetNodeDefaultOptions()
-	myContext := rcl.GetZeroInitializedContext()
 
 	fmt.Printf("Creating the node! \n")
-	node.NodeInit(myNode, "GoPublisher", "", myContext, myNodeOpts)
+	err = node.NodeInit(myNode, "GoPublisher", "", myContext, myNodeOpts)
+	if err != nil {
+		t.Fatalf("NodeInit failed: %s\n", err)
+	}
 
 	//Create the publisher
 	myPub := GetZeroInitializedPublisher()
@@ -102,7 +109,10 @@ func TestPublisherStringMsg(t *testing.T) {
 
 	fmt.Printf("Creating the publisher! \n")
 	//Initializing the publisher
-	PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
+	err = PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
+	if err != nil {
+		t.Fatalf("PublisherInit failed: %s\n", err)
+	}
 
 	index := 0
 loop:
@@ -110,9 +120,11 @@ loop:
 		//Update my msg
 		myMsg.SetText("Greetings from GO! #" + strconv.Itoa(index))
 		//Publish the message
-		retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
+		err := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
-		if retRCL == types.RCL_RET_OK {
+		if err != nil {
+			t.Fatalf("Publish failed: %s\n", err)
+		} else {
 			fmt.Printf("(Publisher) Published: %s\n", myMsg.GetDataAsString())
 		}
 		time.Sleep(500 * time.Millisecond)
@@ -132,10 +144,20 @@ loop:
 	fmt.Printf("Shutting down!! \n")
 
 	myMsg.DestroyMessage()
-	PublisherFini(myPub, myNode)
-	node.NodeFini(myNode)
-	rcl.Shutdown()
+	err = PublisherFini(myPub, myNode)
+	if err != nil {
+		t.Fatalf("PublishFini: %s\n", err)
+	}
 
+	err = node.NodeFini(myNode)
+	if err != nil {
+		t.Fatalf("NodeFini: %s\n", err)
+	}
+
+	err = rcl.Shutdown(myContext)
+	if err != nil {
+		t.Fatalf("rcl.Shutdown: %s\n", err)
+	}
 }
 
 // func TestPublisherInt8Msg(t *testing.T) {

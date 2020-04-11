@@ -38,11 +38,9 @@ func (msg *StdMsgsString) DestroyMessage() {
 	cwrap.DestroyStdMsgsMsgString(msg.data)
 }
 
-// func (msg *StdMsgsString) SetText(text string) {
-// 	cText := C.CString(text)
-// 	defer C.free(unsafe.Pointer(cText))
-// 	C.rosidl_generator_c__String__assign(&msg.data.Data(), cText)
-// }
+func (msg *StdMsgsString) SetText(text string) {
+	msg.data.Set(text)
+}
 
 func GetMessageTypeFromStdMsgsString() MessageTypeSupport {
 	ret := cwrap.GetMessageTypeFromStdMsgsMsgString()
