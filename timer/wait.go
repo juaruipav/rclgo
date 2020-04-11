@@ -1,11 +1,11 @@
 package timer
 
-// #cgo CFLAGS: -I/home/travers/Projects/go/src/github.com/richardrigby/rclgo/ros2-linux/include
+// #cgo CFLAGS: -I/opt/ros/eloquent/include
 // #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
 // #include <rcl/rcl.h>
 import "C"
 import (
-	"github.com/richardrigby/rclgo/internal"
+	cwrap "github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/subscription"
 	"github.com/richardrigby/rclgo/types"
 )
@@ -22,7 +22,7 @@ func GetZeroInitializedWaitSet() WaitSet {
 func WaitSetInit(
 	waitSet WaitSet,
 	numSubs, numGuards, numTimers, numClients, numServices, numEvents int,
-	ctx *cwrap.RclContext,
+	ctx cwrap.RclContextPtr,
 	allo cwrap.RclAllocator,
 ) types.RCLRetT {
 
