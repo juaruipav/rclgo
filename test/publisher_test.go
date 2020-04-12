@@ -1,4 +1,4 @@
-package publisher_test
+package rclgo_test
 
 import (
 	"fmt"
@@ -9,9 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/node"
-	"github.com/richardrigby/rclgo/publisher"
-	"github.com/richardrigby/rclgo/rcl"
+	"github.com/richardrigby/rclgo"
 	"github.com/richardrigby/rclgo/types"
 )
 
@@ -85,13 +83,13 @@ func TestPublisherStringMsg(t *testing.T) {
 	}()
 
 	// Initialization
-	myContext := types.NewZeroInitializedContext()
-	err := rcl.Init(&myContext)
+	myContext := rclgo.NewZeroInitializedContext()
+	err := myContext.Init()
 	if err != nil {
 		t.Fatalf("rcl.Init failed: %s\n", err)
 	}
-	myNode := node.NewZeroInitializedNode()
-	myNodeOpts := node.NewNodeDefaultOptions()
+	myNode := rclgo.NewZeroInitializedNode()
+	myNodeOpts := rclgo.NewNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
 	err = myNode.Init("GoPublisher", "", myContext, myNodeOpts)
@@ -100,8 +98,8 @@ func TestPublisherStringMsg(t *testing.T) {
 	}
 
 	//Create the publisher
-	myPub := publisher.NewZeroInitializedPublisher()
-	myPubOpts := publisher.NewPublisherDefaultOptions()
+	myPub := rclgo.NewZeroInitializedPublisher()
+	myPubOpts := rclgo.NewPublisherDefaultOptions()
 
 	//Create the msg type
 	var myMsg types.StdMsgsString
@@ -154,7 +152,7 @@ loop:
 		t.Fatalf("NodeFini: %s\n", err)
 	}
 
-	err = rcl.Shutdown(myContext)
+	err = myContext.Shutdown()
 	if err != nil {
 		t.Fatalf("rcl.Shutdown: %s\n", err)
 	}

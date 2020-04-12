@@ -1,25 +1,23 @@
-package node_test
+package rclgo_test
 
 import (
 	"fmt"
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/node"
-	"github.com/richardrigby/rclgo/rcl"
-	"github.com/richardrigby/rclgo/types"
+	"github.com/richardrigby/rclgo"
 )
 
 func TestNodeCreation(t *testing.T) {
 	// Initialization
-	ctx := types.NewZeroInitializedContext()
-	err := rcl.Init(&ctx)
+	ctx := rclgo.NewZeroInitializedContext()
+	err := ctx.Init()
 	if err != nil {
 		t.Fatalf("rcl.Init failed: %s\n", err)
 	}
 
-	myNode := node.NewZeroInitializedNode()
-	myNodeOpts := node.NewNodeDefaultOptions()
+	myNode := rclgo.NewZeroInitializedNode()
+	myNodeOpts := rclgo.NewNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
 	err = myNode.Init("fakeNameForNode", "", ctx, myNodeOpts)
@@ -34,7 +32,7 @@ func TestNodeCreation(t *testing.T) {
 		t.Fatalf("NodeFini failed: %s\n", err)
 	}
 
-	err = rcl.Shutdown(ctx)
+	err = ctx.Shutdown()
 	if err != nil {
 		t.Fatalf("rcl.Shutdown failed: %s\n", err)
 	}

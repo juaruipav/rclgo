@@ -1,14 +1,13 @@
-package node
+package rclgo
 
 import (
+	"github.com/richardrigby/rclgo/err"
 	cwrap "github.com/richardrigby/rclgo/internal"
-	"github.com/richardrigby/rclgo/rcl"
-	"github.com/richardrigby/rclgo/types"
 )
 
 //
 type Node struct {
-	RclNode *cwrap.RclNode
+	rclNode *cwrap.RclNode
 }
 
 //
@@ -19,7 +18,7 @@ type NodeOptions struct {
 //
 func NewZeroInitializedNode() Node {
 	zeroNode := cwrap.RclGetZeroInitializedNode()
-	return Node{RclNode: &zeroNode}
+	return Node{rclNode: &zeroNode}
 }
 
 //
@@ -29,16 +28,16 @@ func NewNodeDefaultOptions() NodeOptions {
 }
 
 //
-func (n *Node) Init(name string, namespace string, ctx types.Context, nodeOptions NodeOptions) error {
+func (n *Node) Init(name string, namespace string, ctx Context, nodeOptions NodeOptions) error {
 	ret := cwrap.RclNodeInit(
-		n.RclNode,
+		n.rclNode,
 		name,
 		namespace,
-		ctx.RCLContext,
+		ctx.rclContext,
 		nodeOptions.rclNodeOptions,
 	)
 	if ret != 0 {
-		return rcl.NewErr("cwrap.RclNodeInit", ret)
+		return err.NewErr("RclNodeInit", ret)
 	}
 
 	return nil
@@ -46,9 +45,9 @@ func (n *Node) Init(name string, namespace string, ctx types.Context, nodeOption
 
 //
 func (n *Node) Fini() error {
-	ret := cwrap.RclNodeFini(n.RclNode)
+	ret := cwrap.RclNodeFini(n.rclNode)
 	if ret != 0 {
-		return rcl.NewErr("cwrap.RclNodeFini", ret)
+		return err.NewErr("RclNodeFini", ret)
 	}
 
 	return nil

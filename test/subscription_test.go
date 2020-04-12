@@ -1,4 +1,4 @@
-package subscription_test
+package rclgo_test
 
 import (
 	"fmt"
@@ -8,9 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/node"
-	"github.com/richardrigby/rclgo/rcl"
-	"github.com/richardrigby/rclgo/subscription"
+	"github.com/richardrigby/rclgo"
 	"github.com/richardrigby/rclgo/types"
 )
 
@@ -30,13 +28,13 @@ func TestSubscription(t *testing.T) {
 		}
 	}()
 	// Initialization
-	ctx := types.NewZeroInitializedContext()
-	err := rcl.Init(&ctx)
+	ctx := rclgo.NewZeroInitializedContext()
+	err := ctx.Init()
 	if err != nil {
 		t.Fatalf("rcl.Init: %s", err)
 	}
-	myNode := node.NewZeroInitializedNode()
-	myNodeOpts := node.NewNodeDefaultOptions()
+	myNode := rclgo.NewZeroInitializedNode()
+	myNodeOpts := rclgo.NewNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
 	err = myNode.Init("GoSubscriber", "", ctx, myNodeOpts)
@@ -45,8 +43,8 @@ func TestSubscription(t *testing.T) {
 	}
 
 	//Create the subscriptor
-	mySub := subscription.NewZeroInitializedSubscription()
-	mySubOpts := subscription.NewSubscriptionDefaultOptions()
+	mySub := rclgo.NewZeroInitializedSubscription()
+	mySubOpts := rclgo.NewSubscriptionDefaultOptions()
 
 	//Creating the type
 	msgType := types.GetMessageTypeFromStdMsgsString()
@@ -90,7 +88,7 @@ loop:
 		t.Fatalf("NodeFini: %s", err)
 	}
 
-	err = rcl.Shutdown(ctx)
+	err = ctx.Shutdown()
 	if err != nil {
 		t.Fatalf("rcl.Shutdown: %s", err)
 	}
