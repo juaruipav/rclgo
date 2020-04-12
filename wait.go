@@ -1,9 +1,8 @@
-package timer
+package rclgo
 
 import (
+	"github.com/richardrigby/rclgo/err"
 	cwrap "github.com/richardrigby/rclgo/internal"
-	"github.com/richardrigby/rclgo/rcl"
-	"github.com/richardrigby/rclgo/subscription"
 	"github.com/richardrigby/rclgo/types"
 )
 
@@ -33,7 +32,7 @@ func (w *WaitSet) WaitSetInit(
 		allo,
 	)
 	if ret != types.RCL_RET_OK {
-		return rcl.NewErr("RclWaitSetInit", ret)
+		return err.NewErr("RclWaitSetInit", ret)
 	}
 
 	return nil
@@ -42,7 +41,7 @@ func (w *WaitSet) WaitSetInit(
 func (w *WaitSet) Fini() error {
 	ret := cwrap.RclWaitSetFini(w.rclWaitSet)
 	if ret != types.RCL_RET_OK {
-		return rcl.NewErr("RclWaitSetFini", ret)
+		return err.NewErr("RclWaitSetFini", ret)
 	}
 
 	return nil
@@ -51,16 +50,16 @@ func (w *WaitSet) Fini() error {
 func (w *WaitSet) GetAllocator(allocator *cwrap.RclAllocator) error {
 	ret := cwrap.RclWaitSetGetAllocator(w.rclWaitSet, allocator)
 	if ret != types.RCL_RET_OK {
-		return rcl.NewErr("RclWaitSetGetAllocator", ret)
+		return err.NewErr("RclWaitSetGetAllocator", ret)
 	}
 
 	return nil
 }
 
-func (w *WaitSet) WaitSetAddsubscription(subscription subscription.Subscription) error {
-	ret := cwrap.RclWaitSetAddSubscription(w.rclWaitSet, subscription.RclSubscription, nil)
+func (w *WaitSet) WaitSetAddsubscription(subscription Subscription) error {
+	ret := cwrap.RclWaitSetAddSubscription(w.rclWaitSet, subscription.rclSubscription, nil)
 	if ret != types.RCL_RET_OK {
-		return rcl.NewErr("RclWaitSetAddSubscription", ret)
+		return err.NewErr("RclWaitSetAddSubscription", ret)
 	}
 
 	return nil
@@ -69,7 +68,7 @@ func (w *WaitSet) WaitSetAddsubscription(subscription subscription.Subscription)
 func (w *WaitSet) WaitSetClearSubscriptions() error {
 	ret := cwrap.RclWaitSetClear(w.rclWaitSet)
 	if ret != types.RCL_RET_OK {
-		return rcl.NewErr("RclWaitSetClear", ret)
+		return err.NewErr("RclWaitSetClear", ret)
 	}
 
 	return nil

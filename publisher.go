@@ -1,9 +1,8 @@
-package publisher
+package rclgo
 
 import (
+	"github.com/richardrigby/rclgo/err"
 	cwrap "github.com/richardrigby/rclgo/internal"
-	"github.com/richardrigby/rclgo/node"
-	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
 )
 
@@ -31,30 +30,30 @@ func (p *Publisher) GetTopicName() string {
 
 func (p *Publisher) Init(
 	publisherOptions PublisherOptions,
-	node node.Node,
+	node Node,
 	topicName string,
 	msg types.MessageTypeSupport,
 ) error {
 
 	ret := cwrap.RclPublisherInit(
 		p.rclPublisher,
-		node.RclNode,
+		node.rclNode,
 		msg.ROSIdlMessageTypeSupport,
 		topicName,
 		publisherOptions.rclPublisherOptions,
 	)
 
 	if ret != 0 {
-		return rcl.NewErr("cwrap.RclInitOptionsInit", int(ret))
+		return err.NewErr("RclInitOptionsInit", int(ret))
 	}
 
 	return nil
 }
 
-func (p *Publisher) PublisherFini(node node.Node) error {
-	ret := cwrap.RclPublisherFini(p.rclPublisher, node.RclNode)
+func (p *Publisher) PublisherFini(node Node) error {
+	ret := cwrap.RclPublisherFini(p.rclPublisher, node.rclNode)
 	if ret != 0 {
-		return rcl.NewErr("C.rcl_publisher_fini", int(ret))
+		return err.NewErr("RclPublisherFini", ret)
 	}
 
 	return nil
@@ -69,7 +68,7 @@ func (p *Publisher) Publish(msg types.MessageTypeSupport, data types.MessageData
 	)
 
 	if ret != 0 {
-		return rcl.NewErr("cwrap.Publish", ret)
+		return err.NewErr("RclPublish", ret)
 	}
 
 	return nil

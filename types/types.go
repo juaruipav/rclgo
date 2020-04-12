@@ -115,33 +115,7 @@ type Message interface {
 	DestroyMessage()
 }
 
-type Context struct {
-	RCLContext cwrap.RclContextPtr
-}
-
 type StdMsgsBase struct {
 	MsgType MessageTypeSupport
 	MsgInfo cwrap.RmwMessageInfo
 }
-
-//
-func NewZeroInitializedContext() Context {
-	ctxPtr := cwrap.GetZeroInitializedContextPtr()
-	return Context{ctxPtr}
-}
-
-// func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Bool()}
-// }
-
-// func GetMessageTypeFromStdMsgsByte() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Byte()}
-// }
-
-// func GetMessageTypeFromStdMsgsChar() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_Char()}
-// }
-
-// func GetMessageTypeFromStdMsgsColorRGBA() MessageTypeSupport {
-// 	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_ColorRGBA()}
-// }
