@@ -43,7 +43,7 @@ func (p *Publisher) Init(
 		publisherOptions.rclPublisherOptions,
 	)
 
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclInitOptionsInit", int(ret))
 	}
 
@@ -52,7 +52,7 @@ func (p *Publisher) Init(
 
 func (p *Publisher) PublisherFini(node Node) error {
 	ret := cwrap.RclPublisherFini(p.rclPublisher, node.rclNode)
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclPublisherFini", ret)
 	}
 
@@ -67,7 +67,7 @@ func (p *Publisher) Publish(msg types.MessageTypeSupport, data types.MessageData
 		data.Data,
 	)
 
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclPublish", ret)
 	}
 

@@ -31,7 +31,7 @@ func (w *WaitSet) WaitSetInit(
 		ctx,
 		allo,
 	)
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclWaitSetInit", ret)
 	}
 
@@ -40,7 +40,7 @@ func (w *WaitSet) WaitSetInit(
 
 func (w *WaitSet) Fini() error {
 	ret := cwrap.RclWaitSetFini(w.rclWaitSet)
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclWaitSetFini", ret)
 	}
 
@@ -49,7 +49,7 @@ func (w *WaitSet) Fini() error {
 
 func (w *WaitSet) GetAllocator(allocator *cwrap.RclAllocator) error {
 	ret := cwrap.RclWaitSetGetAllocator(w.rclWaitSet, allocator)
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclWaitSetGetAllocator", ret)
 	}
 
@@ -58,7 +58,7 @@ func (w *WaitSet) GetAllocator(allocator *cwrap.RclAllocator) error {
 
 func (w *WaitSet) WaitSetAddsubscription(subscription Subscription) error {
 	ret := cwrap.RclWaitSetAddSubscription(w.rclWaitSet, subscription.rclSubscription, nil)
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclWaitSetAddSubscription", ret)
 	}
 
@@ -67,7 +67,7 @@ func (w *WaitSet) WaitSetAddsubscription(subscription Subscription) error {
 
 func (w *WaitSet) WaitSetClearSubscriptions() error {
 	ret := cwrap.RclWaitSetClear(w.rclWaitSet)
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclWaitSetClear", ret)
 	}
 

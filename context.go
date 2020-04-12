@@ -25,7 +25,7 @@ func (ctx *Context) Init() error {
 	alloc := cwrap.RclGetDefaultAllocator()
 
 	ret = cwrap.RclInitOptionsInit(&opts, alloc)
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclInitOptionsInit", ret)
 	}
 
@@ -35,12 +35,12 @@ func (ctx *Context) Init() error {
 		&opts,
 		ctx.rclContext,
 	)
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclInit", ret)
 	}
 
 	ret = cwrap.RclInitOptionsFini(&opts)
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclInitOptionsFini", ret)
 	}
 
@@ -50,7 +50,7 @@ func (ctx *Context) Init() error {
 // Shutdown represents Signal global shutdown of rcl.
 func (ctx *Context) Shutdown() error {
 	ret := cwrap.RclShutdown(ctx.rclContext)
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclShutdown", ret)
 	}
 

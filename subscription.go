@@ -39,7 +39,7 @@ func (s *Subscription) Init(
 		subscriptionOptions.rclSubscriptionOptions,
 	)
 
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclSubscriptionInit", ret)
 	}
 
@@ -52,7 +52,7 @@ func (s *Subscription) SubscriptionFini(node Node) error {
 		node.rclNode,
 	)
 
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclSubscriptionFini", ret)
 	}
 
@@ -62,12 +62,12 @@ func (s *Subscription) SubscriptionFini(node Node) error {
 //
 func (s *Subscription) TakeMessage(msg *cwrap.RmwMessageInfo, data types.MessageData) error {
 	if msg == nil || s.rclSubscription == nil || data.Data == nil {
-		return err.NewErr("nil", types.RCL_RET_ERROR)
+		return err.NewErr("nil", types.Error)
 	}
 
 	ret := cwrap.RclTake(s.rclSubscription, data.Data, msg)
 
-	if ret != types.RCL_RET_OK {
+	if ret != types.Ok {
 		return err.NewErr("RclTake", ret)
 	}
 

@@ -204,7 +204,7 @@ loop:
 // 		//Publish the message
 // 		retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
-// 		if retRCL == types.RCL_RET_OK {
+// 		if retRCL == types.Ok {
 // 			var value string
 // 			fmt.Sprintf("%v", value)
 
@@ -279,7 +279,7 @@ loop:
 // 		//Publish the message
 // 		retRCL := Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
 
-// 		if retRCL == types.RCL_RET_OK {
+// 		if retRCL == types.Ok {
 // 			var value string
 // 			fmt.Sprintf("%v", value)
 

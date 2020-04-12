@@ -11,32 +11,32 @@ type RCLRetT int
 
 // Constants used in the framework
 const (
-	RCL_RET_OK                       = 0
-	RCL_RET_ERROR                    = 1
-	RCL_RET_TIMEOUT                  = 2
-	RCL_RET_BAD_ALLOC                = 10
-	RMW_RET_INVALID_ARGUMENT         = 11
-	RCL_RET_ALREADY_INIT             = 100
-	RCL_RET_NOT_INIT                 = 101
-	RCL_RET_MISMATCHED_RMW_ID        = 102
-	RCL_RET_TOPIC_NAME_INVALID       = 103
-	RCL_RET_SERVICE_NAME_INVALID     = 104
-	RCL_RET_UNKNOWN_SUBSTITUTION     = 105
-	RCL_RET_NODE_INVALID             = 200
-	RCL_RET_NODE_INVALID_NAME        = 201
-	RCL_RET_NODE_INVALID_NAMESPACE   = 202
-	RCL_RET_PUBLISHER_INVALID        = 300
-	RCL_RET_SUBSCRIPTION_INVALID     = 400
-	RCL_RET_SUBSCRIPTION_TAKE_FAILED = 401
-	RCL_RET_CLIENT_INVALID           = 500
-	RCL_RET_CLIENT_TAKE_FAILED       = 501
-	RCL_RET_SERVICE_INVALID          = 600
-	RCL_RET_SERVICE_TAKE_FAILED      = 601
-	RCL_RET_TIMER_INVALID            = 800
-	RCL_RET_TIMER_CANCELED           = 801
-	RCL_RET_WAIT_SET_INVALID         = 900
-	RCL_RET_WAIT_SET_EMPTY           = 901
-	RCL_RET_WAIT_SET_FULL            = 902
+	Ok                     = 0
+	Error                  = 1
+	Timeout                = 2
+	BadAlloc               = 10
+	RmwInvalidArgument     = 11
+	AlreadyInit            = 100
+	NotInit                = 101
+	MismatchedRmwID        = 102
+	TopicNameInvalid       = 103
+	ServiceNameInvalid     = 104
+	UnknownSubstitution    = 105
+	NodeInvalid            = 200
+	NodeInvalidName        = 201
+	NodeInvalidNamespace   = 202
+	PublisherInvalid       = 300
+	SubscriptionInvalid    = 400
+	SubscriptionTakeFailed = 401
+	ClientInvalid          = 500
+	ClientTakeFailed       = 501
+	ServiceInvalid         = 600
+	ServiceTakeFailed      = 601
+	TimerInvalid           = 800
+	TimerCanceled          = 801
+	WaitSetInvalid         = 900
+	WaitSetEmpty           = 901
+	WaitSetFull            = 902
 )
 
 func (r RCLRetT) Error() string { return r.String() }

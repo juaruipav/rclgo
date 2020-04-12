@@ -23,7 +23,7 @@ func NewErr(msg string, ret int) Err {
 }
 
 func (e Err) Error() string {
-	if e.ret == types.RCL_RET_OK {
+	if e.ret == types.Ok {
 		return e.msg
 	}
 	return e.msg + ": " + e.ret.String() + "\n" + e.state.Error()

@@ -3,6 +3,7 @@ package rclgo
 import (
 	"github.com/richardrigby/rclgo/err"
 	cwrap "github.com/richardrigby/rclgo/internal"
+	"github.com/richardrigby/rclgo/types"
 )
 
 // Node is a structure that encapsulates a ROS Node.
@@ -37,7 +38,7 @@ func (n *Node) Init(name string, namespace string, ctx Context, nodeOptions Node
 		ctx.rclContext,
 		nodeOptions.rclNodeOptions,
 	)
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclNodeInit", ret)
 	}
 
@@ -47,7 +48,7 @@ func (n *Node) Init(name string, namespace string, ctx Context, nodeOptions Node
 // Fini finalizes an RclNode.
 func (n *Node) Fini() error {
 	ret := cwrap.RclNodeFini(n.rclNode)
-	if ret != 0 {
+	if ret != types.Ok {
 		return err.NewErr("RclNodeFini", ret)
 	}
 
