@@ -8,34 +8,34 @@ import (
 
 //
 type Node struct {
-	RCLNode *cwrap.RclNode
+	RclNode *cwrap.RclNode
 }
 
 //
 type NodeOptions struct {
-	RCLNodeOptions *cwrap.RclNodeOptions
+	rclNodeOptions *cwrap.RclNodeOptions
 }
 
 //
-func GetZeroInitializedNode() Node {
+func NewZeroInitializedNode() Node {
 	zeroNode := cwrap.RclGetZeroInitializedNode()
-	return Node{RCLNode: &zeroNode}
+	return Node{RclNode: &zeroNode}
 }
 
 //
-func GetNodeDefaultOptions() NodeOptions {
+func NewNodeDefaultOptions() NodeOptions {
 	defOpts := cwrap.RclNodeGetDefaultOptions()
-	return NodeOptions{RCLNodeOptions: &defOpts}
+	return NodeOptions{rclNodeOptions: &defOpts}
 }
 
 //
-func NodeInit(node Node, name string, namespace string, ctx types.Context, nodeOptions NodeOptions) error {
+func (n *Node) Init(name string, namespace string, ctx types.Context, nodeOptions NodeOptions) error {
 	ret := cwrap.RclNodeInit(
-		node.RCLNode,
+		n.RclNode,
 		name,
 		namespace,
 		ctx.RCLContext,
-		nodeOptions.RCLNodeOptions,
+		nodeOptions.rclNodeOptions,
 	)
 	if ret != 0 {
 		return rcl.NewErr("cwrap.RclNodeInit", ret)
@@ -45,8 +45,8 @@ func NodeInit(node Node, name string, namespace string, ctx types.Context, nodeO
 }
 
 //
-func NodeFini(node Node) error {
-	ret := cwrap.RclNodeFini(node.RCLNode)
+func (n *Node) Fini() error {
+	ret := cwrap.RclNodeFini(n.RclNode)
 	if ret != 0 {
 		return rcl.NewErr("cwrap.RclNodeFini", ret)
 	}

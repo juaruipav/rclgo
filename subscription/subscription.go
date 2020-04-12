@@ -8,25 +8,24 @@ import (
 )
 
 type Subscription struct {
-	RCLSubscription *cwrap.RclSubscription
+	RclSubscription *cwrap.RclSubscription
 }
 
 type SubscriptionOptions struct {
-	RCLSubscriptionOptions *cwrap.RclSubscriptionOptions
+	RclSubscriptionOptions *cwrap.RclSubscriptionOptions
 }
 
-func GetZeroInitializedSubscription() Subscription {
+func NewZeroInitializedSubscription() Subscription {
 	zeroSubscription := cwrap.RclGetZeroInitializedSubscription()
 	return Subscription{&zeroSubscription}
 }
 
-func GetSubscriptionDefaultOptions() SubscriptionOptions {
+func NewSubscriptionDefaultOptions() SubscriptionOptions {
 	defOpts := cwrap.RclSubscriptionGetDefaultOptions()
 	return SubscriptionOptions{&defOpts}
 }
 
-func SubscriptionInit(
-	subscription Subscription,
+func (s *Subscription) Init(
 	subscriptionOptions SubscriptionOptions,
 	node node.Node,
 	topicName string,
@@ -34,11 +33,11 @@ func SubscriptionInit(
 ) error {
 
 	ret := cwrap.RclSubscriptionInit(
-		subscription.RCLSubscription,
-		node.RCLNode,
+		s.RclSubscription,
+		node.RclNode,
 		msg.ROSIdlMessageTypeSupport,
 		topicName,
-		subscriptionOptions.RCLSubscriptionOptions,
+		subscriptionOptions.RclSubscriptionOptions,
 	)
 
 	if ret != types.RCL_RET_OK {
@@ -48,10 +47,10 @@ func SubscriptionInit(
 	return nil
 }
 
-func SubscriptionFini(subscription Subscription, node node.Node) error {
+func (s *Subscription) SubscriptionFini(node node.Node) error {
 	ret := cwrap.RclSubscriptionFini(
-		subscription.RCLSubscription,
-		node.RCLNode,
+		s.RclSubscription,
+		node.RclNode,
 	)
 
 	if ret != types.RCL_RET_OK {
@@ -62,12 +61,12 @@ func SubscriptionFini(subscription Subscription, node node.Node) error {
 }
 
 //
-func TakeMessage(subscription Subscription, msg *cwrap.RmwMessageInfo, data types.MessageData) error {
-	if msg == nil || subscription.RCLSubscription == nil || data.Data == nil {
+func (s *Subscription) TakeMessage(msg *cwrap.RmwMessageInfo, data types.MessageData) error {
+	if msg == nil || s.RclSubscription == nil || data.Data == nil {
 		return rcl.NewErr("nil", types.RCL_RET_ERROR)
 	}
 
-	ret := cwrap.RclTake(subscription.RCLSubscription, data.Data, msg)
+	ret := cwrap.RclTake(s.RclSubscription, data.Data, msg)
 
 	if ret != types.RCL_RET_OK {
 		return rcl.NewErr("MyRclTake %s", ret)

@@ -12,24 +12,24 @@ import (
 
 func TestNodeCreation(t *testing.T) {
 	// Initialization
-	ctx := types.GetZeroInitializedContext()
+	ctx := types.NewZeroInitializedContext()
 	err := rcl.Init(&ctx)
 	if err != nil {
 		t.Fatalf("rcl.Init failed: %s\n", err)
 	}
 
-	myNode := node.GetZeroInitializedNode()
-	myNodeOpts := node.GetNodeDefaultOptions()
+	myNode := node.NewZeroInitializedNode()
+	myNodeOpts := node.NewNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	err = node.NodeInit(myNode, "fakeNameForNode", "", ctx, myNodeOpts)
+	err = myNode.Init("fakeNameForNode", "", ctx, myNodeOpts)
 	if err != nil {
 		t.Fatalf("NodeInit failed: %s\n", err)
 	}
 
 	time.Sleep(5 * time.Second) // or runtime.Gosched() or similar per @misterbee
 
-	err = node.NodeFini(myNode)
+	err = myNode.Fini()
 	if err != nil {
 		t.Fatalf("NodeFini failed: %s\n", err)
 	}

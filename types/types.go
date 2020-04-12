@@ -125,7 +125,7 @@ type StdMsgsBase struct {
 }
 
 //
-func GetZeroInitializedContext() Context {
+func NewZeroInitializedContext() Context {
 	ctxPtr := cwrap.GetZeroInitializedContextPtr()
 	return Context{ctxPtr}
 }

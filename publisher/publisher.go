@@ -8,29 +8,28 @@ import (
 )
 
 type Publisher struct {
-	RCLPublisher *cwrap.RclPublisher
+	rclPublisher *cwrap.RclPublisher
 }
 
 type PublisherOptions struct {
-	RCLPublisherOptions *cwrap.RclPublisherOptions
+	rclPublisherOptions *cwrap.RclPublisherOptions
 }
 
-func GetZeroInitializedPublisher() Publisher {
+func NewZeroInitializedPublisher() Publisher {
 	zeroPublisher := cwrap.RclGetZeroInitializedPublisher()
 	return Publisher{&zeroPublisher}
 }
 
-func GetPublisherDefaultOptions() PublisherOptions {
+func NewPublisherDefaultOptions() PublisherOptions {
 	defOpts := cwrap.RclPublisherGetDefaultOptions()
 	return PublisherOptions{&defOpts}
 }
 
-func GetTopicName(publisher Publisher) string {
-	return cwrap.RclPublisherGetTopicName(publisher.RCLPublisher)
+func (p *Publisher) GetTopicName() string {
+	return cwrap.RclPublisherGetTopicName(p.rclPublisher)
 }
 
-func PublisherInit(
-	publisher Publisher,
+func (p *Publisher) Init(
 	publisherOptions PublisherOptions,
 	node node.Node,
 	topicName string,
@@ -38,11 +37,11 @@ func PublisherInit(
 ) error {
 
 	ret := cwrap.RclPublisherInit(
-		publisher.RCLPublisher,
-		node.RCLNode,
+		p.rclPublisher,
+		node.RclNode,
 		msg.ROSIdlMessageTypeSupport,
 		topicName,
-		publisherOptions.RCLPublisherOptions,
+		publisherOptions.rclPublisherOptions,
 	)
 
 	if ret != 0 {
@@ -52,8 +51,8 @@ func PublisherInit(
 	return nil
 }
 
-func PublisherFini(publisher Publisher, node node.Node) error {
-	ret := cwrap.RclPublisherFini(publisher.RCLPublisher, node.RCLNode)
+func (p *Publisher) PublisherFini(node node.Node) error {
+	ret := cwrap.RclPublisherFini(p.rclPublisher, node.RclNode)
 	if ret != 0 {
 		return rcl.NewErr("C.rcl_publisher_fini", int(ret))
 	}
@@ -61,10 +60,10 @@ func PublisherFini(publisher Publisher, node node.Node) error {
 	return nil
 }
 
-func Publish(publisher Publisher, msg types.MessageTypeSupport, data types.MessageData) error {
+func (p *Publisher) Publish(msg types.MessageTypeSupport, data types.MessageData) error {
 
 	ret := cwrap.RclPublish(
-		publisher.RCLPublisher,
+		p.rclPublisher,
 		msg.ROSIdlMessageTypeSupport,
 		data.Data,
 	)
@@ -76,6 +75,6 @@ func Publish(publisher Publisher, msg types.MessageTypeSupport, data types.Messa
 	return nil
 }
 
-func IsValid(publisher Publisher) bool {
-	return cwrap.RclPublisherIsValid(publisher.RCLPublisher)
+func (p *Publisher) IsValid() bool {
+	return cwrap.RclPublisherIsValid(p.rclPublisher)
 }

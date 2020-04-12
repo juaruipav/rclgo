@@ -85,23 +85,23 @@ func TestPublisherStringMsg(t *testing.T) {
 	}()
 
 	// Initialization
-	myContext := types.GetZeroInitializedContext()
+	myContext := types.NewZeroInitializedContext()
 	err := rcl.Init(&myContext)
 	if err != nil {
 		t.Fatalf("rcl.Init failed: %s\n", err)
 	}
-	myNode := node.GetZeroInitializedNode()
-	myNodeOpts := node.GetNodeDefaultOptions()
+	myNode := node.NewZeroInitializedNode()
+	myNodeOpts := node.NewNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	err = node.NodeInit(myNode, "GoPublisher", "", myContext, myNodeOpts)
+	err = myNode.Init("GoPublisher", "", myContext, myNodeOpts)
 	if err != nil {
 		t.Fatalf("NodeInit failed: %s\n", err)
 	}
 
 	//Create the publisher
-	myPub := publisher.GetZeroInitializedPublisher()
-	myPubOpts := publisher.GetPublisherDefaultOptions()
+	myPub := publisher.NewZeroInitializedPublisher()
+	myPubOpts := publisher.NewPublisherDefaultOptions()
 
 	//Create the msg type
 	var myMsg types.StdMsgsString
@@ -109,7 +109,7 @@ func TestPublisherStringMsg(t *testing.T) {
 
 	fmt.Printf("Creating the publisher! \n")
 	//Initializing the publisher
-	err = publisher.PublisherInit(myPub, myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
+	err = myPub.Init(myPubOpts, myNode, "/myGoTopic", myMsg.GetMessage())
 	if err != nil {
 		t.Fatalf("PublisherInit failed: %s\n", err)
 	}
@@ -120,7 +120,7 @@ loop:
 		//Update my msg
 		myMsg.SetText("Greetings from GO! #" + strconv.Itoa(index))
 		//Publish the message
-		err := publisher.Publish(myPub, myMsg.GetMessage(), myMsg.GetData())
+		err := myPub.Publish(myMsg.GetMessage(), myMsg.GetData())
 
 		if err != nil {
 			t.Fatalf("Publish failed: %s\n", err)
@@ -144,12 +144,12 @@ loop:
 	fmt.Printf("Shutting down!! \n")
 
 	myMsg.DestroyMessage()
-	err = publisher.PublisherFini(myPub, myNode)
+	err = myPub.PublisherFini(myNode)
 	if err != nil {
 		t.Fatalf("PublishFini: %s\n", err)
 	}
 
-	err = node.NodeFini(myNode)
+	err = myNode.Fini()
 	if err != nil {
 		t.Fatalf("NodeFini: %s\n", err)
 	}
