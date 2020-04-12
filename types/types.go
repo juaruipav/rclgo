@@ -6,6 +6,7 @@ import (
 	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
+// RCLRetT is a wrapper for `rcl_ret_t` that implements the error interface.
 type RCLRetT int
 
 // Constants used in the framework

@@ -6,17 +6,18 @@ import (
 	"github.com/richardrigby/rclgo/types"
 )
 
-//
+// Context encapsulates the non-global state of an init/shutdown cycle.
 type Context struct {
 	rclContext cwrap.RclContextPtr
 }
 
+// NewZeroInitializedContext returns a zero initialization context object.
 func NewZeroInitializedContext() Context {
 	ctxPtr := cwrap.GetZeroInitializedContextPtr()
 	return Context{rclContext: ctxPtr}
 }
 
-// Init represents the global initialization of rcl. This must be called before using any rcl functions.
+// Init finalizes a context.
 func (ctx *Context) Init() error {
 	var ret int
 
