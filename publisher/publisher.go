@@ -1,76 +1,80 @@
 package publisher
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
-// #include <rosidl_generator_c/message_type_support_struct.h>
-// #include "rcl/rcl.h"
-// #include <std_msgs/msg/string.h>
-// #include  <std_msgs/msg/string__functions.h>
-// #include <rosidl_generator_c/string_functions.h>
-// int publish (const rcl_publisher_t * publisher,  rosidl_message_type_support_t* msg, void * data){
-//		if(msg == NULL || publisher == NULL || data == NULL)
-//			return 1;
-//		// Payload assignation to the message
-//		msg->data = data;
-//		int retValue = rcl_publish(publisher, msg->data, NULL);
-//		return retValue;
-//}
-import "C"
 import (
-	"unsafe"
-
+	cwrap "github.com/richardrigby/rclgo/internal"
 	"github.com/richardrigby/rclgo/node"
+	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
 )
 
 type Publisher struct {
-	RCLPublisher *C.rcl_publisher_t
+	rclPublisher *cwrap.RclPublisher
 }
 
 type PublisherOptions struct {
-	RCLPublisherOptions *C.rcl_publisher_options_t
+	rclPublisherOptions *cwrap.RclPublisherOptions
 }
 
-func GetZeroInitializedPublisher() Publisher {
-	zeroPublisher := C.rcl_get_zero_initialized_publisher()
+func NewZeroInitializedPublisher() Publisher {
+	zeroPublisher := cwrap.RclGetZeroInitializedPublisher()
 	return Publisher{&zeroPublisher}
 }
 
-func GetPublisherDefaultOptions() PublisherOptions {
-	defOpts := C.rcl_publisher_get_default_options()
+func NewPublisherDefaultOptions() PublisherOptions {
+	defOpts := cwrap.RclPublisherGetDefaultOptions()
 	return PublisherOptions{&defOpts}
 }
 
-func GetTopicName(publisher Publisher) string {
-	return C.GoString(C.rcl_publisher_get_topic_name(publisher.RCLPublisher))
+func (p *Publisher) GetTopicName() string {
+	return cwrap.RclPublisherGetTopicName(p.rclPublisher)
 }
 
-func PublisherInit(publisher Publisher, publisherOptions PublisherOptions, node node.Node, topicName string, msg types.MessageTypeSupport) types.RCLRetT {
+func (p *Publisher) Init(
+	publisherOptions PublisherOptions,
+	node node.Node,
+	topicName string,
+	msg types.MessageTypeSupport,
+) error {
 
-	tName := C.CString(topicName)
-	defer C.free(unsafe.Pointer(tName))
+	ret := cwrap.RclPublisherInit(
+		p.rclPublisher,
+		node.RclNode,
+		msg.ROSIdlMessageTypeSupport,
+		topicName,
+		publisherOptions.rclPublisherOptions,
+	)
 
-	return types.RCLRetT(C.rcl_publisher_init(publisher.RCLPublisher,
-		(*C.struct_rcl_node_t)(unsafe.Pointer(node.RCLNode)),
-		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)),
-		tName,
-		publisherOptions.RCLPublisherOptions))
+	if ret != 0 {
+		return rcl.NewErr("cwrap.RclInitOptionsInit", int(ret))
+	}
 
+	return nil
 }
 
-func PublisherFini(publisher Publisher, node node.Node) types.RCLRetT {
-	return types.RCLRetT(C.rcl_publisher_fini(publisher.RCLPublisher, (*C.struct_rcl_node_t)(unsafe.Pointer(node.RCLNode))))
+func (p *Publisher) PublisherFini(node node.Node) error {
+	ret := cwrap.RclPublisherFini(p.rclPublisher, node.RclNode)
+	if ret != 0 {
+		return rcl.NewErr("C.rcl_publisher_fini", int(ret))
+	}
+
+	return nil
 }
 
-func Publish(publisher Publisher, msg types.MessageTypeSupport, data types.MessageData) types.RCLRetT {
+func (p *Publisher) Publish(msg types.MessageTypeSupport, data types.MessageData) error {
 
-	retValue := C.publish(publisher.RCLPublisher,
-		(*C.rosidl_message_type_support_t)(unsafe.Pointer(msg.ROSIdlMessageTypeSupport)),
-		data.Data)
+	ret := cwrap.RclPublish(
+		p.rclPublisher,
+		msg.ROSIdlMessageTypeSupport,
+		data.Data,
+	)
 
-	return types.RCLRetT(retValue)
+	if ret != 0 {
+		return rcl.NewErr("cwrap.Publish", ret)
+	}
+
+	return nil
 }
 
-func IsValid(publisher Publisher) bool {
-	return bool(C.rcl_publisher_is_valid(publisher.RCLPublisher))
+func (p *Publisher) IsValid() bool {
+	return cwrap.RclPublisherIsValid(p.rclPublisher)
 }

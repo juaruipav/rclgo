@@ -1,4 +1,4 @@
-package subscription
+package subscription_test
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardrigby/rclgo/cwrap"
 	"github.com/richardrigby/rclgo/node"
 	"github.com/richardrigby/rclgo/rcl"
+	"github.com/richardrigby/rclgo/subscription"
 	"github.com/richardrigby/rclgo/types"
 )
 
@@ -30,22 +30,32 @@ func TestSubscription(t *testing.T) {
 		}
 	}()
 	// Initialization
-	rcl.Init()
-	ctx := types.Context{RCLContext: cwrap.GetZeroInitializedContext()}
-	myNode := node.GetZeroInitializedNode()
-	myNodeOpts := node.GetNodeDefaultOptions()
+	ctx := types.NewZeroInitializedContext()
+	err := rcl.Init(&ctx)
+	if err != nil {
+		t.Fatalf("rcl.Init: %s", err)
+	}
+	myNode := node.NewZeroInitializedNode()
+	myNodeOpts := node.NewNodeDefaultOptions()
 
 	fmt.Printf("Creating the node! \n")
-	node.NodeInit(myNode, "GoSubscriber", "", ctx, myNodeOpts)
+	err = myNode.Init("GoSubscriber", "", ctx, myNodeOpts)
+	if err != nil {
+		t.Fatalf("NodeInit: %s", err)
+	}
+
 	//Create the subscriptor
-	mySub := GetZeroInitializedSubscription()
-	mySubOpts := GetSubscriptionDefaultOptions()
+	mySub := subscription.NewZeroInitializedSubscription()
+	mySubOpts := subscription.NewSubscriptionDefaultOptions()
 
 	//Creating the type
 	msgType := types.GetMessageTypeFromStdMsgsString()
 
 	fmt.Printf("Creating the subscriber! \n")
-	SubscriptionInit(mySub, mySubOpts, myNode, "/myGoTopic", msgType)
+	err = mySub.Init(mySubOpts, myNode, "/myGoTopic", msgType)
+	if err != nil {
+		t.Fatalf("SubscriptionsInit: %s", err)
+	}
 
 	//Creating the msg type
 	var myMsg types.StdMsgsString
@@ -53,10 +63,8 @@ func TestSubscription(t *testing.T) {
 
 loop:
 	for {
-
-		retRCL := TakeMessage(mySub, &myMsg.MsgInfo, myMsg.GetData())
-
-		if retRCL == types.RCL_RET_OK {
+		err = mySub.TakeMessage(&myMsg.MsgInfo, myMsg.GetData())
+		if err == nil {
 			fmt.Printf("(Suscriber) Received %s\n", myMsg.GetDataAsString())
 		}
 
@@ -72,8 +80,18 @@ loop:
 	fmt.Printf("Shutting down!! \n")
 
 	myMsg.DestroyMessage()
-	SubscriptionFini(mySub, myNode)
-	node.NodeFini(myNode)
-	rcl.Shutdown(ctx)
+	err = mySub.SubscriptionFini(myNode)
+	if err != nil {
+		t.Fatalf("SubscriptionFini: %s", err)
+	}
 
+	err = myNode.Fini()
+	if err != nil {
+		t.Fatalf("NodeFini: %s", err)
+	}
+
+	err = rcl.Shutdown(ctx)
+	if err != nil {
+		t.Fatalf("rcl.Shutdown: %s", err)
+	}
 }

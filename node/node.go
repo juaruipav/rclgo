@@ -1,46 +1,55 @@
 package node
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
-// #include "rcl/node.h"
-import "C"
 import (
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
+	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/types"
 )
 
+//
 type Node struct {
-	RCLNode *cwrap.RclNode
+	RclNode *cwrap.RclNode
 }
 
+//
 type NodeOptions struct {
-	RCLNodeOptions *cwrap.RclNodeOptions
+	rclNodeOptions *cwrap.RclNodeOptions
 }
 
-func GetZeroInitializedNode() Node {
+//
+func NewZeroInitializedNode() Node {
 	zeroNode := cwrap.RclGetZeroInitializedNode()
-	return Node{RCLNode: &zeroNode}
+	return Node{RclNode: &zeroNode}
 }
 
-func GetNodeDefaultOptions() NodeOptions {
+//
+func NewNodeDefaultOptions() NodeOptions {
 	defOpts := cwrap.RclNodeGetDefaultOptions()
-	return NodeOptions{RCLNodeOptions: &defOpts}
+	return NodeOptions{rclNodeOptions: &defOpts}
 }
 
-func NodeInit(node Node, name string, namespace string, ctx types.Context, nodeOptions NodeOptions) types.RCLRetT {
-	nodeInit := cwrap.RclNodeInit(
-		node.RCLNode,
+//
+func (n *Node) Init(name string, namespace string, ctx types.Context, nodeOptions NodeOptions) error {
+	ret := cwrap.RclNodeInit(
+		n.RclNode,
 		name,
 		namespace,
-		&ctx.RCLContext,
-		nodeOptions.RCLNodeOptions,
+		ctx.RCLContext,
+		nodeOptions.rclNodeOptions,
 	)
-	return types.RCLRetT(
-		nodeInit,
-	)
+	if ret != 0 {
+		return rcl.NewErr("cwrap.RclNodeInit", ret)
+	}
+
+	return nil
 }
 
-func NodeFini(node Node) {
-	cwrap.RclNodeFini(node.RCLNode)
+//
+func (n *Node) Fini() error {
+	ret := cwrap.RclNodeFini(n.RclNode)
+	if ret != 0 {
+		return rcl.NewErr("cwrap.RclNodeFini", ret)
+	}
+
+	return nil
 }

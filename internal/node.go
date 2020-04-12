@@ -1,8 +1,7 @@
 package cwrap
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
+// #include <rcl/rcl.h>
 import "C"
 import "unsafe"
 
@@ -19,6 +18,12 @@ func RclNodeGetDefaultOptions() RclNodeOptions {
 }
 
 //
+func RclGetZeroInitializedNode() RclNode {
+	var zeroNode C.rcl_node_t = C.rcl_get_zero_initialized_node()
+	return RclNode(zeroNode)
+}
+
+//
 func RclNodeFini(node *RclNode) int {
 	cNode := (*C.rcl_node_t)(node)
 	ret := C.rcl_node_fini(cNode)
@@ -30,7 +35,7 @@ func RclNodeInit(
 	node *RclNode,
 	name string,
 	namespace string,
-	ctx *RclContext,
+	ctx RclContextPtr,
 	options *RclNodeOptions,
 ) int {
 	var cName *C.char = C.CString(name)
@@ -45,5 +50,6 @@ func RclNodeInit(
 		(*C.rcl_context_t)(ctx),
 		(*C.rcl_node_options_t)(options),
 	)
+
 	return int(ret)
 }

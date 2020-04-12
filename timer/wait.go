@@ -1,34 +1,28 @@
 package timer
 
-// #cgo CFLAGS: -I/home/travers/Projects/go/src/github.com/richardrigby/rclgo/ros2-linux/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include <rcl/rcl.h>
-import "C"
 import (
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
+	"github.com/richardrigby/rclgo/rcl"
 	"github.com/richardrigby/rclgo/subscription"
 	"github.com/richardrigby/rclgo/types"
 )
 
 type WaitSet struct {
-	RCLWaitSet *cwrap.RclWaitSet
+	rclWaitSet *cwrap.RclWaitSet
 }
 
-func GetZeroInitializedWaitSet() WaitSet {
+func NewZeroInitializedWaitSet() WaitSet {
 	zeroWaitset := cwrap.RclGetZeroInitializedWaitSet()
 	return WaitSet{&zeroWaitset}
 }
 
-func WaitSetInit(
-	waitSet WaitSet,
+func (w *WaitSet) WaitSetInit(
 	numSubs, numGuards, numTimers, numClients, numServices, numEvents int,
-	ctx *cwrap.RclContext,
+	ctx cwrap.RclContextPtr,
 	allo cwrap.RclAllocator,
-) types.RCLRetT {
-
-	// allocatorPtr := (*C.struct_rcutils_allocator_t)(unsafe.Pointer(allo.Allocator))
-	retValue := cwrap.RclWaitSetInit(
-		waitSet.RCLWaitSet,
+) error {
+	ret := cwrap.RclWaitSetInit(
+		w.rclWaitSet,
 		numSubs,
 		numGuards,
 		numTimers,
@@ -38,56 +32,45 @@ func WaitSetInit(
 		ctx,
 		allo,
 	)
-	return types.RCLRetT(retValue)
+	if ret != types.RCL_RET_OK {
+		return rcl.NewErr("RclWaitSetInit", ret)
+	}
+
+	return nil
 }
 
-func WaitSetFini(waitSet WaitSet) types.RCLRetT {
-	ret := cwrap.RclWaitSetFini(waitSet.RCLWaitSet)
-	return types.RCLRetT(ret)
+func (w *WaitSet) Fini() error {
+	ret := cwrap.RclWaitSetFini(w.rclWaitSet)
+	if ret != types.RCL_RET_OK {
+		return rcl.NewErr("RclWaitSetFini", ret)
+	}
+
+	return nil
 }
 
-func WaitSetGetAllocator(waitSet WaitSet, allocator *cwrap.RclAllocator) types.RCLRetT {
-	// allocatorPtr := (*C.struct_rcutils_allocator_t)(unsafe.Pointer(allocator.Allocator))
-	// return types.RCLRetT(C.rcl_wait_set_get_allocator(waitset.RCLWaitSet, allocatorPtr))
+func (w *WaitSet) GetAllocator(allocator *cwrap.RclAllocator) error {
+	ret := cwrap.RclWaitSetGetAllocator(w.rclWaitSet, allocator)
+	if ret != types.RCL_RET_OK {
+		return rcl.NewErr("RclWaitSetGetAllocator", ret)
+	}
 
-	ret := cwrap.RclWaitSetGetAllocator(waitSet.RCLWaitSet, allocator)
-	return types.RCLRetT(ret)
+	return nil
 }
 
-// Store a pointer to the given subscription in the next empty spot in the set.
-/**
- * This function does not guarantee that the subscription is not already in the
- * wait set.
- *
- * Also add the rmw representation to the underlying rmw array and increment
- * the rmw array count.
- *
- * <hr>
- * Attribute          | Adherence
- * ------------------ | -------------
- * Allocates Memory   | Yes
- * Thread-Safe        | No
- * Uses Atomics       | No
- * Lock-Free          | Yes
- *
- * \param[inout] wait_set struct in which the subscription is to be stored
- * \param[in] subscription the subscription to be added to the wait set
- * \param[out] index the index of the added subscription in the storage container.
- *   This parameter is optional and can be set to `NULL` to be ignored.
- * \return `RCL_RET_OK` if added successfully, or
- * \return `RCL_RET_INVALID_ARGUMENT` if any arguments are invalid, or
- * \return `RCL_RET_WAIT_SET_INVALID` if the wait set is zero initialized, or
- * \return `RCL_RET_WAIT_SET_FULL` if the subscription set is full, or
- * \return `RCL_RET_ERROR` if an unspecified error occurs.
- */
-func WaitSetAddsubscription(waitSet WaitSet, subscription subscription.Subscription) types.RCLRetT {
-	// subscriptionPtr := (*C.rcl_subscription_t)(unsafe.Pointer(subscription.RCLSubscription))
-	// return types.RCLRetT(C.rcl_wait_set_add_subscription(waitset.RCLWaitSet, subscriptionPtr, nil))
-	ret := cwrap.RclWaitSetAddSubscription(waitSet.RCLWaitSet, subscription.RCLSubscription, nil)
-	return types.RCLRetT(ret)
+func (w *WaitSet) WaitSetAddsubscription(subscription subscription.Subscription) error {
+	ret := cwrap.RclWaitSetAddSubscription(w.rclWaitSet, subscription.RclSubscription, nil)
+	if ret != types.RCL_RET_OK {
+		return rcl.NewErr("RclWaitSetAddSubscription", ret)
+	}
+
+	return nil
 }
 
-func WaitSetClearSubscriptions(waitSet WaitSet) types.RCLRetT {
-	ret := cwrap.RclWaitSetClear(waitSet.RCLWaitSet)
-	return types.RCLRetT(ret)
+func (w *WaitSet) WaitSetClearSubscriptions() error {
+	ret := cwrap.RclWaitSetClear(w.rclWaitSet)
+	if ret != types.RCL_RET_OK {
+		return rcl.NewErr("RclWaitSetClear", ret)
+	}
+
+	return nil
 }

@@ -1,15 +1,9 @@
 package types
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
-//// #include "msg_types.h"
-//#include <rcl/rcl.h>
-//#include <rosidl_generator_c/message_type_support_struct.h>
-import "C"
 import (
 	"unsafe"
 
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
 type RCLRetT int
@@ -43,6 +37,8 @@ const (
 	RCL_RET_WAIT_SET_EMPTY           = 901
 	RCL_RET_WAIT_SET_FULL            = 902
 )
+
+func (r RCLRetT) Error() string { return r.String() }
 
 func (r RCLRetT) String() string {
 	switch r {
@@ -120,12 +116,18 @@ type Message interface {
 }
 
 type Context struct {
-	RCLContext cwrap.RclContext
+	RCLContext cwrap.RclContextPtr
 }
 
 type StdMsgsBase struct {
 	MsgType MessageTypeSupport
 	MsgInfo cwrap.RmwMessageInfo
+}
+
+//
+func NewZeroInitializedContext() Context {
+	ctxPtr := cwrap.GetZeroInitializedContextPtr()
+	return Context{ctxPtr}
 }
 
 // func GetMessageTypeFromStdMsgsBool() MessageTypeSupport {

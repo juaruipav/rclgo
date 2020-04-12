@@ -1,15 +1,9 @@
 package types
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
-// #include <rcl/rcl.h>
-// #include "../cwrap/msg_types.h"
-import "C"
-
 import (
 	"unsafe"
 
-	"github.com/richardrigby/rclgo/cwrap"
+	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
 type StdMsgsString struct {
@@ -38,11 +32,9 @@ func (msg *StdMsgsString) DestroyMessage() {
 	cwrap.DestroyStdMsgsMsgString(msg.data)
 }
 
-// func (msg *StdMsgsString) SetText(text string) {
-// 	cText := C.CString(text)
-// 	defer C.free(unsafe.Pointer(cText))
-// 	C.rosidl_generator_c__String__assign(&msg.data.Data(), cText)
-// }
+func (msg *StdMsgsString) SetText(text string) {
+	msg.data.Set(text)
+}
 
 func GetMessageTypeFromStdMsgsString() MessageTypeSupport {
 	ret := cwrap.GetMessageTypeFromStdMsgsMsgString()

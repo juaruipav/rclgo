@@ -1,8 +1,7 @@
 package cwrap
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
+// #include <rcl/rcl.h>
 import "C"
 
 //
@@ -18,7 +17,7 @@ func RclGetZeroInitializedWaitSet() RclWaitSet {
 func RclWaitSetInit(
 	waitSet *RclWaitSet,
 	numSubs, numGuards, numTimers, numClients, numServices, numEvents int,
-	ctx *RclContext,
+	ctx RclContextPtr,
 	allo RclAllocator,
 ) int {
 	var ret C.int32_t = C.rcl_wait_set_init(

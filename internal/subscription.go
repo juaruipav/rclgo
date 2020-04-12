@@ -1,8 +1,7 @@
 package cwrap
 
 // #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
+// #include <rcl/rcl.h>
 import "C"
 
 import (

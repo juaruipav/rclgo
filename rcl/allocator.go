@@ -1,20 +1,19 @@
 package rcl
 
-// #cgo CFLAGS: -I/opt/ros/eloquent/include
-// #cgo LDFLAGS: -L/opt/ros/eloquent/lib -Wl,-rpath=/opt/ros/eloquent/lib -lrcl -lrcutils
-// #include "rcl/rcl.h"
-import "C"
+import (
+	cwrap "github.com/richardrigby/rclgo/internal"
+)
 
 type Allocator struct {
-	Allocator *C.rcl_allocator_t
+	Allocator *cwrap.RclAllocator
 }
 
 func GetZeroInitializedAllocator() Allocator {
-	zeroAllocator := C.rcutils_get_zero_initialized_allocator()
+	zeroAllocator := cwrap.RcutilsGetZeroInitializedAllocator()
 	return Allocator{&zeroAllocator}
 }
 
 func GetDefaultAllocator() Allocator {
-	defAllocator := C.rcutils_get_default_allocator()
+	defAllocator := cwrap.RcutilsGetDefaultAllocator()
 	return Allocator{&defAllocator}
 }
