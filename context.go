@@ -47,7 +47,17 @@ func (ctx *Context) Init() error {
 	return nil
 }
 
-// Shutdown represents Signal global shutdown of rcl.
+// Fini finalizes a context.
+func (ctx *Context) Fini() error {
+	ret := cwrap.RclContextFini(ctx.rclContext)
+	if ret != types.Ok {
+		return err.NewErr("RclContextFini", ret)
+	}
+
+	return nil
+}
+
+// Shutdown shuts down the context.
 func (ctx *Context) Shutdown() error {
 	ret := cwrap.RclShutdown(ctx.rclContext)
 	if ret != types.Ok {
@@ -55,4 +65,10 @@ func (ctx *Context) Shutdown() error {
 	}
 
 	return nil
+}
+
+// IsValid returns `true` if the context is currently valid, otherwise `false`.
+func (ctx *Context) IsValid() bool {
+	ret := cwrap.RclContextIsValid(ctx.rclContext)
+	return bool(ret)
 }
