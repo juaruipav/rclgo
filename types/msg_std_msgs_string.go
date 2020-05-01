@@ -1,22 +1,14 @@
 package types
 
-// #cgo CFLAGS: -I/opt/ros/bouncy/include
-// #cgo LDFLAGS: -L/opt/ros/bouncy/lib -lrcl -lrosidl_generator_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c
-// #include "msg_types.h"
-// char * getCharFromStruct(std_msgs__msg__String* msg){
-//		if(msg!=NULL)
-//			return msg->data.data;
-//		else
-//			return "";
-//}
-import "C"
 import (
 	"unsafe"
+
+	cwrap "github.com/richardrigby/rclgo/internal"
 )
 
 type StdMsgsString struct {
-	data    *C.std_msgs__msg__String
-	MsgType MessageTypeSupport
+	data *cwrap.StdMsgs_MsgString
+	StdMsgsBase
 }
 
 func (msg *StdMsgsString) GetMessage() MessageTypeSupport {
@@ -28,24 +20,23 @@ func (msg *StdMsgsString) GetData() MessageData {
 }
 
 func (msg *StdMsgsString) GetDataAsString() string {
-	return C.GoString(C.getCharFromStruct(msg.data))
+	return msg.data.String()
 }
 
 func (msg *StdMsgsString) InitMessage() {
-	msg.data = C.init_std_msgs_msg_String()
+	msg.data = cwrap.InitStdMsgsMsgString()
 	msg.MsgType = GetMessageTypeFromStdMsgsString()
 }
 
 func (msg *StdMsgsString) DestroyMessage() {
-	C.destroy_std_msgs_msg_String(msg.data)
+	cwrap.DestroyStdMsgsMsgString(msg.data)
 }
 
 func (msg *StdMsgsString) SetText(text string) {
-	cText := C.CString(text)
-	defer C.free(unsafe.Pointer(cText))
-	C.rosidl_generator_c__String__assign(&msg.data.data, cText)
+	msg.data.Set(text)
 }
 
 func GetMessageTypeFromStdMsgsString() MessageTypeSupport {
-	return MessageTypeSupport{C.get_message_type_from_std_msgs_msg_String()}
+	ret := cwrap.GetMessageTypeFromStdMsgsMsgString()
+	return MessageTypeSupport{ret}
 }
